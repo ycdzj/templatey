@@ -112,15 +112,20 @@ class rank_SplayTree {
 		root->size = Size_of_node(root->left) + Size_of_node(root->right) + 1;
 	}
 
-	void Clear(Node *root) {
-		if(root != nullptr) {
-			Clear(root->left), Clear(root->right);
-			alloc.destroy(root), alloc.deallocate(root, 1);
-		}
-	}
 public:
 	rank_SplayTree() : root(nullptr) {}
-	//~rank_SplayTree() { Clear(root); }
+	~rank_SplayTree() {
+		if(root != nullptr) {
+			std::stack<Node*> s;
+			s.push(root);
+			while(!s.empty()) {
+				Node *t = s.top(); s.pop();
+				if(t->left != nullptr) s.push(t->left);
+				if(t->right != nullptr) s.push(t->right);
+				alloc.destroy(t), alloc.deallocate(t, 1);
+			}
+		}
+	}
 	int Size() { return Size_of_node(root); }
 	bool Has(const T &val) {
 		return root != nullptr && (Splay(val), root->val == val);
@@ -168,12 +173,127 @@ public:
 		}
 	}
 };
+template<typename T>
+class SplayTree {
+	struct Node {
+		T val;
+		Node *left, *right;
+		Node(const T &val) : val(val), left(nullptr), right(nullptr) {}
+	};
+	Node *root;
+	std::allocator<Node> alloc;
 
+	void Splay(const T &val) {
+		Node *l, *r;
+		Node **l_ = &l, **r_ = &r;
+		while(!(root->val == val)) {
+			if(val < root->val) {
+				if(root->left == nullptr) break;
+				if(val < root->left->val && root->left->left != nullptr) {
+					//right rotate
+					Node *y = root->left;
+					root->left = y->right, y->right = root, root = y;
+				}
+				//move to left
+				*r_ = root, r_ = &root->left, root = root->left;
+			}
+			else {
+				if(root->right == nullptr) break;
+				if(!(val < root->right->val) && root->right->right != nullptr) {
+					//left rotate
+					Node *y = root->right;
+					root->right = y->left, y->left = root, root = y;
+				}
+				//move to right
+				*l_ = root, l_ = &root->right, root = root->right;
+			}
+		}
+		*l_ = root->left, *r_ = root->right;
+		root->left = l, root->right = r;
+	}
+	void Splay_min() {
+		Node *r;
+		Node **r_ = &r;
+		while(root->left != nullptr) {
+			if(root->left->left != nullptr) {
+				//right rotate
+				Node *y = root->left;
+				root->left = y->right, y->right = root, root = y;
+			}
+			//move to left
+			*r_ = root, r_ = &root->left, root = root->left;
+		}
+		*r_ = root->right, root->right = r;
+	}
+	void Splay_max() {
+		Node *l;
+		Node **l_ = &l;
+		while(root->right != nullptr) {
+			if(root->right->right != nullptr) {
+				//left rotate
+				Node *y = root->right;
+				root->right = y->left, y->left = root, root = y;
+			}
+			//move to right
+			*l_ = root, l_ = &root->right, root = root->right;
+		}
+		*l_ = root->left, root->left = l;
+	}
+
+public:
+	SplayTree() : root(nullptr) {}
+	~SplayTree() {
+		if(root != nullptr) {
+			std::stack<Node*> s;
+			s.push(root);
+			while(!s.empty()) {
+				Node *t = s.top(); s.pop();
+				if(t->left != nullptr) s.push(t->left);
+				if(t->right != nullptr) s.push(t->right);
+				alloc.destroy(t), alloc.deallocate(t, 1);
+			}
+		}
+	}
+	T& Access(const T &val) {
+		if(Has(val)) return root->val;
+	}
+	T& Min() {
+		if(root != nullptr) return Splay_min(), root->val;
+	}
+	T& Max() {
+		if(root != nullptr) return Splay_max(), root->val;
+	}
+	bool Has(const T &val) {
+		return root != nullptr && (Splay(val), root->val == val);
+	}
+	void Insert(const T &val) {
+		if(root == nullptr) root = alloc.allocate(1), alloc.construct(root, val);
+		else if(!Has(val)) {
+			Node *New = alloc.allocate(1);
+			alloc.construct(New, val);
+			if(val < root->val) New->left = root->left, New->right = root, root->left = nullptr;
+			else New->right = root->right, New->left = root, root->right = nullptr;
+			root = New;
+		}
+	}
+	void Delete(const T &val) {
+		if(Has(val)) {
+			Node *x = root;
+			if(x->left == nullptr) root = root->right;
+			else {
+				root = root->left;
+				Splay_max();
+				root->right = x->right;
+			}
+			alloc.destroy(x), alloc.deallocate(x, 1);
+		}
+	}
+};
 int main() {
 	using namespace std;
-	rank_SplayTree<int> rspt;
-	int n = 4e5, m = 5e6;
-	for(int i = 0; i < n; i++) rspt.Insert(n - 1 - i);
+	rank_SplayTree<int> spt;
+	srand(1234);
+	for(int i = 0; i < 1e7; i++) spt.Insert(rand());
 /*	srand(9854022);
 	vector<int> v;
 	for(int i = 0; i < n; i++) {
