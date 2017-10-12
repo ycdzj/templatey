@@ -10,9 +10,9 @@ class rank_SplayTree {
 	struct Node {
 		T val;
 		int size;
-		Node *left, *right;
+		Node* ch[2];
 
-		Node(const T &val): val(val), size(1), left(nullptr), right(nullptr) {}
+		Node(const T &val): val(val), size(1), ch({nullptr, nullptr}) {}
 	};
 	std::allocator<Node> alloc;
 	Node *root;
@@ -21,110 +21,80 @@ class rank_SplayTree {
 		return node == nullptr ? 0 : node->size;
 	}
 	void Splay(const T &val) {
-		Node *l, *r;
-		Node **l_ = &l, **r_ = &r;
-		std::stack<Node*> sl, sr;
+		Node* p[2];
+		Node **p_[2] = { &p[0], &p[1] };
+		std::stack<Node*> s[2];
 		while(!(root->val == val)) {
-			if(val < root->val) {
-				if(root->left == nullptr) break;
-				if(val < root->left->val && root->left->left != nullptr) {
-					//right rotate
-					Node *y = root->left;
-					root->left = y->right, y->right = root;
-					y->size = root->size, root->size -= y->left->size + 1;
-					root = y;
-				}
-				//move to left
-				*r_ = root, r_ = &root->left;
-				sr.push(root);
-				root->size -= root->left->size;
-				root = root->left;
+			int d = val < root->val ? 0 : 1;
+			if(root->ch[d] == nullptr) break;
+			if(val < root->ch[d]->val && root->ch[d]->ch[d] != nullptr) {
+				//rotate
+				Node *y = root->ch[d];
+				root->ch[d] = y->ch[d ^ 1], y->ch[d ^ 1] = root;
+				y->size = root->size, root->size -= y->ch[d]->size + 1;
+				root = y;
 			}
-			else {
-				if(root->right == nullptr) break;
-				if(root->right->val < val && root->right->right != nullptr) {
-					//left rotate
-					Node *y = root->right;
-					root->right = y->left, y->left = root;
-					y->size = root->size, root->size -= y->right->size + 1;
-					root = y;
-				}
-				//move to right
-				*l_ = root, l_ = &root->right;
-				sl.push(root);
-				root->size -= root->right->size;
-				root = root->right;
-			}
+			//move
+			*p_[d ^ 1] = root, p_[d ^ 1] = &root->ch[d];
+			s[d ^ 1].push(root);
+			root->size -= root->ch[d]->size;
+			root = root->ch[d];
 		}
-		*l_ = root->left, *r_ = root->right;
-		root->left = l, root->right = r;
-		while(!sl.empty()) sl.top()->size += Size_of_node(sl.top()->right), sl.pop();
-		while(!sr.empty()) sr.top()->size += Size_of_node(sr.top()->left), sr.pop();
-		root->size = Size_of_node(root->left) + Size_of_node(root->right) + 1;
+		root->size = 1;
+		for(int i = 0; i < 2; i++) {
+			*p_[i] = root->ch[i], root->ch[i] = p[i];
+			while(!s[i].empty()) s[i].top()->size += Size_of_node(s[i].top()->ch[1]), s[i].pop();
+			root->size += Size_of_node(root->ch[i]);
+		}
 	}
-	void Splay_kth(int k) {// start from 0
-		Node *l, *r;
-		Node **l_ = &l, **r_ = &r;
-		std::stack<Node*> sl, sr;
-		int cur = Size_of_node(root->left);
+	void Splay_kth(int k) {
+		Node* p[2];
+		Node **p_[2] = { &p[0], &p[1] };
+		std::stack<Node*> s[2];
+		int cur = Size_of_node(root->ch[0]);
 		while(cur != k) {
-			if(k < cur) {
-				if(root->left == nullptr) break;
-				int cur_left = cur - (1 + Size_of_node(root->left->right));
-				if(k < cur_left && root->left->left != nullptr) {
-					//right rotate
-					Node *y = root->left;
-					cur -= 1 + Size_of_node(y->right);
-					root->left = y->right, y->right = root;
-					y->size = root->size, root->size -= y->left->size + 1;
-					root = y;
-				}
-				//move to left
-				cur -= 1 + Size_of_node(root->left->right);
-				*r_ = root, r_ = &root->left;
-				sr.push(root);
-				root->size -= root->left->size;
-				root = root->left;
+			int d = k < cur ? 0 : 1;
+			int d_ = k < cur ? -1 : 1;
+			if(root->ch[d] == nullptr) break;
+			int cur_nxt = cur + d_ * (1 + Size_of_node(root->ch[d]->ch[d ^ 1]));
+			if(k * d_ > cur_nxt * d_ && root->ch[d]->ch[d] != nullptr) {
+				//rotate
+				Node *y = root->ch[d];
+				cur += d_ * (1 + Size_of_node(y->ch[d ^ 1]));
+				root->ch[d] = y->ch[d ^ 1], y->ch[d ^ 1] = root;
+				y->size = root->size, root->size -= Size_of_node(y->ch[d]) + 1;
+				root = y;
 			}
-			else {
-				if(root->right == nullptr) break;
-				int cur_right = cur + 1 + Size_of_node(root->right->left);
-				if(k > cur_right && root->right->right != nullptr) {
-					//left rotate
-					Node *y = root->right;
-					cur += 1 + Size_of_node(y->left);
-					root->right = y->left, y->left = root;
-					y->size = root->size, root->size -= y->right->size + 1;
-					root = y;
-				}
-				//move to right
-				cur += 1 + Size_of_node(root->right->left);
-				*l_ = root, l_ = &root->right;
-				sl.push(root);
-				root->size -= root->right->size;
-				root = root->right;
-			}
+			//move
+			cur += d_ * (1 + Size_of_node(root->ch[d]->ch[d ^ 1]));
+			*p_[d ^ 1] = root, p_[d ^ 1] = &root->ch[d];
+			s[d ^ 1].push(root);
+			root->size -= root->ch[d]->size;
+			root = root->ch[d];
 		}
-		*l_ = root->left, *r_ = root->right;
-		root->left = l, root->right = r;
-		while(!sl.empty()) sl.top()->size += Size_of_node(sl.top()->right), sl.pop();
-		while(!sr.empty()) sr.top()->size += Size_of_node(sr.top()->left), sr.pop();
-		root->size = Size_of_node(root->left) + Size_of_node(root->right) + 1;
+		root->size = 1;
+		for(int i = 0; i < 2; i++) {
+			*p_[i] = root->ch[i], root->ch[i] = p[i];
+			while(!s[i].empty()) s[i].top()->size += Size_of_node(s[i].top()->ch[1]), s[i].pop();
+			root->size += Size_of_node(root->ch[i]);
+		}
 	}
 
 public:
 	rank_SplayTree() : root(nullptr) {}
-	~rank_SplayTree() {
+	~rank_SplayTree() { Clear(); }
+	void Clear() {
 		if(root != nullptr) {
 			std::stack<Node*> s;
 			s.push(root);
 			while(!s.empty()) {
 				Node *t = s.top(); s.pop();
-				if(t->left != nullptr) s.push(t->left);
-				if(t->right != nullptr) s.push(t->right);
+				if(t->ch[0] != nullptr) s.push(t->ch[0]);
+				if(t->ch[1] != nullptr) s.push(t->ch[1]);
 				alloc.destroy(t), alloc.deallocate(t, 1);
 			}
 		}
+		root = nullptr;
 	}
 	int Size() { return Size_of_node(root); }
 	bool Has(const T &val) {
@@ -139,7 +109,7 @@ public:
 	int Rank(const T &val) {
 		if(root != nullptr) {
 			Splay(val);
-			return Size_of_node(root->left) + (root->val < val ? 1 : 0);
+			return Size_of_node(root->ch[0]) + (root->val < val ? 1 : 0);
 		}
 	}
 	void Insert(const T &val) {
@@ -153,21 +123,21 @@ public:
 			root = alloc.allocate(1);
 			alloc.construct(root, val);
 			if(val < x->val)
-				root->left = x->left, x->left = nullptr, root->right = x;
+				root->ch[0] = x->ch[0], x->ch[0] = nullptr, root->ch[1] = x;
 			else
-				root->right = x->right, x->right = nullptr, root->left = x;
-			x->size = Size_of_node(x->left) + Size_of_node(x->right) + 1;
-			root->size = Size_of_node(root->left) + Size_of_node(root->right) + 1;
+				root->ch[1] = x->ch[1], x->ch[1] = nullptr, root->ch[0] = x;
+			x->size = Size_of_node(x->ch[0]) + Size_of_node(x->ch[1]) + 1;
+			root->size = Size_of_node(root->ch[0]) + Size_of_node(root->ch[1]) + 1;
 		}
 	}
 	void Delete(const T &val) {
 		if(Has(val)) {
 			Node *x = root;
-			if(root->left == nullptr) root = root->right;
+			if(root->ch[0] == nullptr) root = root->ch[1];
 			else {
-				root = root->left;
-				Splay_kth(root->left->size);
-				root->right = x->right;
+				root = root->ch[0];
+				Splay_kth(x->size);
+				root->ch[1] = x->ch[1];
 			}
 			alloc.destroy(x), alloc.deallocate(x, 1);
 		}
@@ -293,7 +263,9 @@ int main() {
 	using namespace std;
 	rank_SplayTree<int> spt;
 	srand(1234);
+	int n = 1e7;
 	for(int i = 0; i < 1e7; i++) spt.Insert(rand());
+	for(int i = 0; i < 1e7; i++) spt.Select((rand() + n)%n);
 /*	srand(9854022);
 	vector<int> v;
 	for(int i = 0; i < n; i++) {
