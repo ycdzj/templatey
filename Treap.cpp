@@ -1,101 +1,72 @@
 #include <memory>
-#include <algorithm>
 
 template<typename T>
-class Treap {
-	struct Node {
-		T val;
-		int s, p;
-		Node* c[2];
+struct treapNode {
+	T val;
+	int s, p;
+	treapNode<T>* c[2];
+	treapNode(const T &val): val(val) {
+		s = 1, p = rand(), c[0] = c[1] = nullptr;
+	}
 
-		Node(const T &val) : val(val), s(1), p(rand()) {
-			c[0] = c[1] = nullptr;
-		}
-	};
-	std::allocator<Node> alloc;
-	Node* root;
-
-	inline int sizeOfNode(Node *root) { return root == nullptr ? 0 : root->s; }
-	inline void rotate(Node *&root, int d) {
-		Node *y = root->c[d];
+	static std::allocator<treapNode<T>> alloc;
+	static inline void rotate(treapNode<T>* &root, int d) {
+		treapNode<T> *y = root->c[d];
 
 		y->s = root->s;
-		root->s = sizeOfNode(root->c[d ^ 1]) + sizeOfNode(y->c[d ^ 1]) + 1;
+		root->s = size(root->c[d ^ 1]) + size(y->c[d ^ 1]) + 1;
 
-		root->c[d] = y->c[d ^ 1];
-		y->c[d ^ 1] = root;
-		root = y;
+		root->c[d] = y->c[d ^ 1], y->c[d ^ 1] = root, root = y;
 	}
-	void remove_(Node *&root) {
-		for(int i = 0; i < 2; i++) if(root->c[i] == nullptr) {
-			Node *y = root;
-			root = root->c[i ^ 1];
-			alloc.destroy(y), alloc.deallocate(y, 1);
-			return;
-		}
-		int d = root->c[0]->p < root->c[1]->p ? 0 : 1;
-		rotate(root, d), --root->s, remove_(root->c[d ^ 1]);
-	}
-	bool remove_(const T &val, Node *&root) {
-		if(root == nullptr) return false;
-		if(root->val == val) return remove_(root), true;
-		if(remove_(val, root->c[val < root->val ? 0 : 1])) return --root->s, true;
-		return false;
-	}
-	void clear(Node *r) {
-		if(r != nullptr) {
-			clear(r->c[0]), clear(r->c[1]);
-			alloc.destroy(r), alloc.deallocate(r, 1);
+
+	friend int size(treapNode<T>* root) { return root == nullptr ? 0 : root->s; }
+	friend void clear(treapNode<T>* &root) {
+		if(root != nullptr) {
+			clear(root->c[0]), clear(root->c[1]);
+			alloc.destroy(root), alloc.deallocate(root, 1);
+			root = nullptr;
 		}
 	}
-	void insert(const T &val, Node *&root) {
+	friend void insert(treapNode<T>* &root, const T &val) {
 		if(root == nullptr) root = alloc.allocate(1), alloc.construct(root, val);
 		else {
 			int d = val < root->val ? 0 : 1;
-			insert(val, root->c[d]);
-			++root->s;
-			if(root->c[d]->p > root->p) rotate(root, d);
+			insert(root->c[d], val), ++root->s;
+			if(root->c[d]->p < root->p) rotate(root, d);
 		}
 	}
-public:
-	Treap() { init(); }
-	~Treap() { clear(root); }
-	void init() { clear(root), root = nullptr; }
-
-	int size() { return sizeOfNode(root); }
-	void insert(const T &val) { insert(val, root); }
-	void remove(const T &val) {
-		remove_(val, root);
+	friend bool remove(treapNode<T>* &root, const T &val) {
+		if(root == nullptr) return false;
+		if(root->val == val) {
+			for(int i = 0; i < 2; i++) if(root->c[i] == nullptr) {
+					auto y = root;
+					root = root->c[i ^ 1];
+					alloc.destroy(y), alloc.deallocate(y, 1);
+					return true;
+				}
+			int d = root->c[0]->p < root->c[1]->p ? 0 : 1;
+			rotate(root, d), remove(root->c[d ^ 1], val), --root->s;
+			return true;
+		}
+		else if(remove(root->c[val < root->val ? 0 : 1], val)) return --root->s, true;
+		return false;
 	}
-	T& select(int k) {
-		Node *root = this->root;
+	friend T& select(treapNode<T>* root, int k) {
 		while(root != nullptr) {
-			int cur = sizeOfNode(root->c[0]);
-			if(k == cur) return root->val;
+			int cur = size(root->c[0]);
+			if(cur == k) return root->val;
 			root = root->c[k < cur ? 0 : 1];
 			if(k > cur) k -= ++cur;
 		}
 	}
-	int rank(const T &val) {
-		int pre = 0;
-		Node *root = this->root;
-		while(root != nullptr && !(val == root->val)) {
-			int d = val < root->val ? 0 : 1;
-			if(d == 1) pre += sizeOfNode(root->c[0]) + 1;
-			root = root->c[d];
-		}
-		if(root != nullptr) pre += sizeof(root->c[0]);
-		return pre;
+	friend int lower_bound(treapNode<T>* root, const T &val) {
+		if(root == nullptr) return 0;
+		if(val < root->val || val == root->val) return lower_bound(root->c[0], val);
+		return size(root->c[0]) + 1 + lower_bound(root->c[1], val);
+	}
+	friend bool contain(treapNode<T>* root, const T &val) {
+		return root != nullptr && (root->val == val || contain(root->c[val < root->val ? 0 : 1], val));
 	}
 };
-
-int main() {
-	int n = 2e5;
-	Treap<int> trep;
-	for(int i = 0; i < n; i++) trep.insert(rand());
-	for(int i = 0; i < n; i++) {
-		int j = ((rand() % trep.size()) + trep.size()) % trep.size();
-		trep.remove(trep.select(j));
-	}
-	return 0;
-}
+template<typename T>
+std::allocator<treapNode<T>> treapNode<T>::alloc;
