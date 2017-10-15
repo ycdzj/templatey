@@ -64,6 +64,11 @@ struct treapNode {
 		if(val < root->val || val == root->val) return lower_bound(root->c[0], val);
 		return size(root->c[0]) + 1 + lower_bound(root->c[1], val);
 	}
+	friend int upper_bound(treapNode<T>* root, const T &val) {
+		if(root == nullptr) return 0;
+		if(val < root->val || val == root->val) return size(root->c[0]) + 1 + upper_bound(root->c[1], val);
+		return upper_bound(root->c[0], val);
+	}
 	friend bool contain(treapNode<T>* root, const T &val) {
 		return root != nullptr && (root->val == val || contain(root->c[val < root->val ? 0 : 1], val));
 	}
