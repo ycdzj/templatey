@@ -8,8 +8,7 @@ struct splayNode {
 	T val;
 	int s;
 	splayNode<T>* c[2];
-	splayNode(const T &val, splayNode<T>* l, splayNode<T>* r):
-			val(val), c({l, r}) {}
+	splayNode(const T &val) : val(val) {}
 
 	static std::allocator<splayNode<T>> alloc;
 	static void rotate(splayNode<T>* &root, int d) {
@@ -26,12 +25,15 @@ struct splayNode {
 		std::stack<splayNode<T>*> s[2];
 		while(true) {
 			int cur = size(root->c[0]);
-			int d = k < cur ? 0 : 1, d_ = k < cur ? 1 : -1;
+			int d = k < cur ? 0 : 1;
 			if(k == cur || root->c[d] == nullptr) break;
-			if(d_ * k < d_ * size(root->c[d]->c[d]) && root->c[d]->c[d] != nullptr) rotate(root, d);
+			if(d == 0 && k < size(root->c[d]->c[d]) && root->c[d]->c[d] != nullptr)
+				rotate(root, d);
+			if(d == 1 && k >= size(root) - size(root->c[d]->c[d]) && root->c[d]->c[d] != nullptr)
+				rotate(root, d);
 			*p_[d ^ 1] = root, p_[d ^ 1] = &root->c[d], s[d ^ 1].push(root);
+			if(d == 1) k -= size(root->c[0]) + 1;
 			root = root->c[d];
-			if(d == 1) k -= ++cur;
 		}
 		for(int i = 0; i < 2; i++) {
 			*p_[i] = root->c[i], root->c[i] = p[i];
@@ -44,20 +46,21 @@ struct splayNode {
 	friend void build(splayNode<T>* &root, T* a, int l, int r) {
 		if(l > r) { root = nullptr; return; }
 		int mid = (l + r) / 2;
-		root = alloc.allocate(1);
-		alloc.construct(root, a[mid], build(root->c[0], a, l, mid - 1), build(root->c[1], a, mid + 1, r));
+		root = alloc.allocate(1), alloc.construct(root, a[mid]);
+		build(root->c[0], a, l, mid - 1), build(root->c[1], a, mid + 1, r);
 		root->s = 1 + size(root->c[0]) + size(root->c[1]);
 	}
-	friend splayNode<T>* split(splayNode<T>* &root, int k) {
-		if(root == nullptr) return nullptr;
-		splay_kth(root, k);
-		auto res = root->c[1];
-		root->c[1] = nullptr;
-		return res;
+	friend void split(splayNode<T>* root, int k, splayNode<T>* &left, splayNode<T>* &right) {
+		if(k >= size(root)) left = root, right = nullptr;
+		else {
+			splay_kth(root, k);
+			left = root->c[0], right = root;
+			root->s -= size(root->c[0]), root->c[0] = nullptr;
+		}
 	}
 	friend void attach(splayNode<T>* &left, splayNode<T>* right) {
 		if(left == nullptr) left = right;
-		else splay_kth(left, size(left) - 1), left->c[1] = right;
+		else splay_kth(left, size(left) - 1), left->c[1] = right, left->s += size(right);
 	}
 	friend void clear(splayNode<T>* &root) {
 		std::stack<splayNode<T>*> s;
@@ -74,7 +77,6 @@ struct splayNode {
 template<typename T>
 std::allocator<splayNode<T>> splayNode<T>::alloc;
 
-
 void print(splayNode<char> *a) {
 	if(a != nullptr) {
 		print(a->c[0]);
@@ -82,11 +84,11 @@ void print(splayNode<char> *a) {
 		print(a->c[1]);
 	}
 }
-splayNode<char>* a;
+splayNode<char>* a, *b;
 int main() {
 	char str[] = "abcde12345";
 	build(a, str, 0, (int)strlen(str) - 1);
-	auto b = split(a, 1);
+	split(a, 3, a, b);
 	print(a);
 	return 0;
 }
