@@ -1,5 +1,3 @@
-#include <memory>
-
 template<typename T>
 struct treapNode {
 	T val;

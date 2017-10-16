@@ -1,8 +1,3 @@
-#include <memory>
-#include <stack>
-#include <cstdio>
-#include <cstring>
-
 template<typename T>
 struct splayNode {
 	T val;
@@ -76,19 +71,3 @@ struct splayNode {
 };
 template<typename T>
 std::allocator<splayNode<T>> splayNode<T>::alloc;
-
-void print(splayNode<char> *a) {
-	if(a != nullptr) {
-		print(a->c[0]);
-		putchar(a->val);
-		print(a->c[1]);
-	}
-}
-splayNode<char>* a, *b;
-int main() {
-	char str[] = "abcde12345";
-	build(a, str, 0, (int)strlen(str) - 1);
-	split(a, 3, a, b);
-	print(a);
-	return 0;
-}

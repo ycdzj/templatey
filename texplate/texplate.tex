@@ -1,66 +1,86 @@
-\documentclass{article}
+\documentclass[twoside]{article}
+
+%\usepackage{showframe}
 
 \usepackage{geometry}
-\geometry{left = 2.0cm, right = 2.0cm, top = 2.0cm, bottom = 2.0cm}
+\geometry{left = 1.0cm, right = 1.0cm, top = 2.0cm, bottom = 1.0cm}
 
 \usepackage{listings}
 \usepackage{color}
+\usepackage{courier}
 \renewcommand\lstlistingname{Quelltext} % Change language of section name
 \lstset{ % General setup for the package
 	language=C++,
-	basicstyle=\small\sffamily,
-	numbers=left,
- 	numberstyle=\tiny,
 	frame=tb,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\color{blue},
+	numbers=left,
+	%numbersep=5pt,
+	numberstyle=\tiny,
 	tabsize=4,
-	columns=fixed,
-	showstringspaces=false,
-	showtabs=false,
-	keepspaces,
-	commentstyle=\color{red},
-	keywordstyle=\color{blue}
+	breaklines=true,
+	showstringspaces=false
 }
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[RO, LE]{\thepage}
+\fancyhead[LO, RE]{\leftmark}
+
+\usepackage{afterpage}
+\newcommand\blankpage{ \null\thispagestyle{empty}\addtocounter{page}{-1}\newpage }
 
 \title{Standard Code Library}
 \author{}
-\date{}
 
 \begin{document}
 	\pagenumbering{gobble}
 	\maketitle
+	\afterpage{\blankpage}
 
 	\newpage
 	\tableofcontents
 
 	\newpage
 	\pagenumbering{arabic}
-
 	\section{String algorithm}
 		\subsection{Kmp}
-		\subsection{Extend Kmp}
 			\lstinputlisting{../Kmp.cpp}
+		\subsection{Extend Kmp}
+			\lstinputlisting{../ExKmp.cpp}
 		\subsection{Longest Palindrome}
 			\lstinputlisting{../Manacher.cpp}
-		\subsection{AC Automation}
+		\subsection{AC Automaton}
+			\lstinputlisting{../ACAutomaton.cpp}
 		\subsection{Suffix Arrary}
 		\subsection{Lcp Matcher}
+	\newpage
 	\section{Data Structure}
 		\subsection{Segment Tree}
 			\lstinputlisting{../SegmentTree.cpp}
+		\subsection{Range Segment Tree}
+			\lstinputlisting{../range_SegmentTree.cpp}
 		\subsection{Binary Indexed Tree}
+			\lstinputlisting{../BIT.cpp}
 		\subsection{Treap}
 			\lstinputlisting{../Treap.cpp}
 		\subsection{Splay Tree}
 			\lstinputlisting{../SplayTree.cpp}
+	\newpage
 	\section{Graph}
 		\subsection{Dijkstra}
 		\subsection{MST}
+	\newpage
 	\section{2D Geometry}
 		\subsection{Point and Vector}
+	\newpage
 	\section{Math}
 		\subsection{Extend Euclid}
+	\newpage
 	\section{Other}
 		\subsection{Checker}
+			\lstinputlisting[language=sh]{../checker.sh}
 		\subsection{Fast IO}
 			\lstinputlisting{../FastIO.cpp}
 
