@@ -1,0 +1,68 @@
+\documentclass{article}
+
+\usepackage{geometry}
+\geometry{left = 2.0cm, right = 2.0cm, top = 2.0cm, bottom = 2.0cm}
+
+\usepackage{listings}
+\usepackage{color}
+\renewcommand\lstlistingname{Quelltext} % Change language of section name
+\lstset{ % General setup for the package
+	language=C++,
+	basicstyle=\small\sffamily,
+	numbers=left,
+ 	numberstyle=\tiny,
+	frame=tb,
+	tabsize=4,
+	columns=fixed,
+	showstringspaces=false,
+	showtabs=false,
+	keepspaces,
+	commentstyle=\color{red},
+	keywordstyle=\color{blue}
+}
+
+\title{Standard Code Library}
+\author{}
+\date{}
+
+\begin{document}
+	\pagenumbering{gobble}
+	\maketitle
+
+	\newpage
+	\tableofcontents
+
+	\newpage
+	\pagenumbering{arabic}
+
+	\section{String algorithm}
+		\subsection{Kmp}
+		\subsection{Extend Kmp}
+			\lstinputlisting{../Kmp.cpp}
+		\subsection{Longest Palindrome}
+			\lstinputlisting{../Manacher.cpp}
+		\subsection{AC Automation}
+		\subsection{Suffix Arrary}
+		\subsection{Lcp Matcher}
+	\section{Data Structure}
+		\subsection{Segment Tree}
+			\lstinputlisting{../SegmentTree.cpp}
+		\subsection{Binary Indexed Tree}
+		\subsection{Treap}
+			\lstinputlisting{../Treap.cpp}
+		\subsection{Splay Tree}
+			\lstinputlisting{../SplayTree.cpp}
+	\section{Graph}
+		\subsection{Dijkstra}
+		\subsection{MST}
+	\section{2D Geometry}
+		\subsection{Point and Vector}
+	\section{Math}
+		\subsection{Extend Euclid}
+	\section{Other}
+		\subsection{Checker}
+		\subsection{Fast IO}
+			\lstinputlisting{../FastIO.cpp}
+
+\end{document}
+
