@@ -1,4 +1,4 @@
-class ACAutomata {
+class ACAutomaton {
 	static const int maxn = 3e6;
 	struct { int v, next; } e[maxn];
 	int head[maxn], cnt_e, cnt_v;
