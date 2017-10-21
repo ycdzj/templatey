@@ -11,7 +11,7 @@
 \renewcommand\lstlistingname{Quelltext} % Change language of section name
 \lstset{ % General setup for the package
 	language=C++,
-	frame=single,
+	frame=tb,
 	basicstyle=\footnotesize\ttfamily,
 	keywordstyle=\color{blue},
 	%numbers=left,
@@ -45,7 +45,6 @@
 
 	\newpage
 	\pagenumbering{arabic}
-	\twocolumn
 	\section{String algorithm}
 		\subsection{Kmp}
 			\lstinputlisting{../Kmp.cpp}
@@ -56,7 +55,7 @@
 		\subsection{AC Automaton}
 			\lstinputlisting{../ACAutomaton.cpp}
 		\subsection{Suffix Arrary}
-		\subsection{Lcp Matcher}
+			\lstinputlisting{../SuffixArray.cpp}
 	\newpage
 	\section{Data Structure}
 		\subsection{Segment Tree}
