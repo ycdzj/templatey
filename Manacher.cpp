@@ -1,4 +1,4 @@
-void Manacher(char *str, int len, int p[]) {
+void manacher(char *str, int len, int p[]) {
 	p[0] = 1;
 	int key = 0;
 	for(int i = 1; i < len; i++) {
