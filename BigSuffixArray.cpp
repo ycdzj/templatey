@@ -1,60 +1,62 @@
 struct SuffixArray {
-	int pos[maxn], len;
-	char* str;
+	char *str;
+	int len;
+	int pos[maxn], rank[maxn];
 	SegmentTree<int> lcp;
 
-	void build(char* str, int len) {
-		static int prm[maxn], count[maxn];
+	void build(char *str, int len) {
+		this->str = str, this->len = len;
 		static bool begin[2][maxn];
-		this->len = len;
-		this->str = str;
-
 		lcp.init(len, [](int a, int b)->int{return std::min(a, b);});
+
 		for(int i = 0; i < len; i++) pos[i] = i;
-		std::sort(pos, pos + len, [&str](int a, int b)->bool { return str[a] < str[b]; });
+		std::sort(pos, pos + len, [&str](int a, int b)->bool{return str[a] < str[b];});
 		for(int i = 0, b = 0; i < len; i++) {
-			if(str[pos[b]] != str[pos[i]]) b = i;
-			begin[0][i] = b == i;
-			lcp[i] = b == i ? 0 : len + 1;
+			if(str[pos[i]] != str[pos[b]]) b = i;
+			begin[0][i] = begin[1][i] = b == i;
+			lcp[i] = b == i ? 0 : (len + 1);
 		}
 		lcp.build();
 
+		static int cnt[maxn];
 		for(int h = 1, bh = 0; h < len; h <<= 1, bh ^= 1) {
-			std::fill(count, count + len, 0);
-			std::fill(begin[bh ^ 1], begin[bh ^ 1] + len, false);
+			//stage h:
+			std::fill(cnt, cnt + len, 0);
+			for(int i = 0; i < len; i++) rank[pos[i]] = begin[bh][i] ? i : rank[pos[i - 1]];
 
-			for(int i = 0; i < len; i++)
-				prm[pos[i]] = begin[bh][i] ? i : prm[pos[i - 1]];
 			for(int i = 1; i <= h; i++) {
-				prm[len - i] += count[prm[len - i]]++;
-				begin[bh ^ 1][prm[len - i]] = true;
+				rank[len - i] += cnt[rank[len - i]]++;
+				begin[bh ^ 1][rank[len - i]] = true;
 			}
+
 			for(int i = 0; i <= len; i++) {
 				if(i == len || begin[bh][i]) {
 					for(int j = i; j-- > 0; ) {
-						if(pos[j] - h >= 0) {
-							for(int k = prm[pos[j] - h] + 1; k < len && begin[bh ^ 1][k] && !begin[bh][k]; k++) begin[bh ^ 1][k] = false;
+						if(pos[j] >= h) {
+							for(int k = rank[pos[j] - h] + 1; k < len && begin[bh ^ 1][k] && !begin[bh][k]; k++) begin[bh ^ 1][k] = false;
 						}
 						if(begin[bh][j]) break;
 					}
 				}
-				if(i < len && pos[i] - h >= 0) {
-					prm[pos[i] - h] += count[prm[pos[i] - h]]++;
-					begin[bh ^ 1][prm[pos[i] - h]] = true;
+				if(i < len && pos[i] >= h) {
+					rank[pos[i] - h] += cnt[rank[pos[i] - h]]++;
+					begin[bh ^ 1][rank[pos[i] - h]] = true;
 				}
 			}
-			for(int i = 0; i < len; i++) pos[prm[i]] = i;
-			for(int i = 0; i < len; i++) if(!begin[bh][i] && begin[bh ^ 1][i]) {
-					int a = pos[i - 1] + h, b = pos[i] + h, r;
+			for(int i = 0; i < len; i++) pos[rank[i]] = i;
+			for(int i = 0; i < len; i++) if(begin[bh ^ 1][i] && !begin[bh][i]) {
+					int a = pos[i] + h, b = pos[i - 1] + h, r;
 					if(a >= len || b >= len) r = 0;
-					else {
-						a = prm[a], b = prm[b];
-						if(a > b) std::swap(a, b);
-						r = lcp.query(a + 1, b);
-					}
+					else r = getLcp(a, b);
 					lcp.update(i, r + h);
 				}
 		}
+	}
+	inline int getLcp(int i, int j) {
+		if(i == j) return len - i;
+		i = rank[i], j = rank[j];
+		if(i > j) std::swap(i, j);
+		return lcp.query(i + 1, j);
 	}
 	int naive_lcp(char* str, int len, char* str_p, int len_p) {
 		int t = std::min(len, len_p);
