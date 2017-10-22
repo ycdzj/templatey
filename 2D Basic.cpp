@@ -55,6 +55,7 @@ struct Line {
 	Line(const Segment &sg) : Line(sg.a, sg.b - sg.a) {}
 };
 
+
 double disToSegment(const Segment &sg, const Point &p) {
 	if(sg.a == sg.b) return (sg.a - p).length();
 	Vector AB = sg.b - sg.a, AP = p - sg.a, BP = p - sg.b;
