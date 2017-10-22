@@ -7,16 +7,13 @@ struct SuffixArray {
 	void build(char *str, int len) {
 		this->str = str, this->len = len;
 		static bool begin[2][maxn];
-		lcp.init(len, [](int a, int b)->int{return std::min(a, b);});
 
 		for(int i = 0; i < len; i++) pos[i] = i;
 		std::sort(pos, pos + len, [&str](int a, int b)->bool{return str[a] < str[b];});
 		for(int i = 0, b = 0; i < len; i++) {
 			if(str[pos[i]] != str[pos[b]]) b = i;
 			begin[0][i] = begin[1][i] = b == i;
-			lcp[i] = b == i ? 0 : (len + 1);
 		}
-		lcp.build();
 
 		static int cnt[maxn];
 		for(int h = 1, bh = 0; h < len; h <<= 1, bh ^= 1) {
@@ -44,13 +41,19 @@ struct SuffixArray {
 				}
 			}
 			for(int i = 0; i < len; i++) pos[rank[i]] = i;
-			for(int i = 0; i < len; i++) if(begin[bh ^ 1][i] && !begin[bh][i]) {
-					int a = pos[i] + h, b = pos[i - 1] + h, r;
-					if(a >= len || b >= len) r = 0;
-					else r = getLcp(a, b);
-					lcp.update(i, r + h);
-				}
 		}
+	}
+	void build_lcp() {
+		lcp.init(len, [](int a, int b)->int{ return std::min(a, b); });
+		for(int i = 0, k = 0; i < len; i++)
+			if(rank[i] == 0) k = lcp[rank[i]] = 0;
+			else {
+				if(k) k--;
+				int j = pos[rank[i] - 1];
+				while(i + k < len && j + k < len && str[i + k] == str[j + k]) k++;
+				lcp[rank[i]] = k;
+			}
+		lcp.build();
 	}
 	inline int getLcp(int i, int j) {
 		if(i == j) return len - i;
