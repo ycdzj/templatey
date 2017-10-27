@@ -7,14 +7,12 @@ struct SuffixArray {
 	void build(char *str, int len) {
 		this->str = str, this->len = len;
 		static bool begin[2][maxn];
-
 		for(int i = 0; i < len; i++) pos[i] = i;
 		std::sort(pos, pos + len, [&str](int a, int b)->bool{return str[a] < str[b];});
 		for(int i = 0, b = 0; i < len; i++) {
 			if(str[pos[i]] != str[pos[b]]) b = i;
 			begin[0][i] = begin[1][i] = b == i;
 		}
-
 		static int cnt[maxn];
 		for(int h = 1, bh = 0; h < len; h <<= 1, bh ^= 1) {
 			//stage h:
@@ -25,7 +23,6 @@ struct SuffixArray {
 				rank[len - i] += cnt[rank[len - i]]++;
 				begin[bh ^ 1][rank[len - i]] = true;
 			}
-
 			for(int i = 0; i <= len; i++) {
 				if(i == len || begin[bh][i]) {
 					for(int j = i; j-- > 0; ) {
