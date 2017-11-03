@@ -32,6 +32,8 @@
 \usepackage{afterpage}
 \newcommand\blankpage{ \null\thispagestyle{empty}\addtocounter{page}{-1}\newpage }
 
+%\usepackage[UTF8]{ctex}
+
 \title{Standard Code Library}
 \author{}
 
@@ -48,10 +50,10 @@
 	\section{String algorithm}
 		\subsection{Kmp}
 			\lstinputlisting{../Kmp.cpp}
-		\subsection{Extend Kmp}
-			\lstinputlisting{../ExKmp.cpp}
 		\subsection{Longest Palindrome}
 			\lstinputlisting{../Manacher.cpp}
+		\subsection{Extend Kmp}
+			\lstinputlisting{../ExKmp.cpp}
 		\subsection{AC Automaton}
 			\lstinputlisting{../ACAutomaton.cpp}
 		\subsection{Suffix Arrary}
@@ -72,6 +74,9 @@
 	\section{Graph}
 		\subsection{Maximum Flow}
 			\lstinputlisting{../Maxflow.cpp}
+		\newpage
+		\subsection{Maximum Bipartite Matching}
+			\lstinputlisting{../Maximum_Matching.cpp}
 	\newpage
 	\section{2D Geometry}
 		\subsection{Basic Operations}
