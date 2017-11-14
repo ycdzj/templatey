@@ -3,7 +3,7 @@
 %\usepackage{showframe}
 
 \usepackage{geometry}
-\geometry{left = 1.0cm, right = 1.0cm, top = 2.0cm, bottom = 1.0cm}
+\geometry{left = 1.2cm, right = 1.2cm, top = 2.0cm, bottom = 1.0cm}
 
 \usepackage{listings}
 \usepackage{color}
@@ -26,8 +26,8 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[RO, LE]{\thepage}
-\fancyhead[LO, RE]{\leftmark}
+\fancyhead[RO, LE]{\leftmark}
+\fancyhead[LO, RE]{\thepage}
 
 \usepackage{afterpage}
 \newcommand\blankpage{ \null\thispagestyle{empty}\addtocounter{page}{-1}\newpage }
@@ -77,6 +77,12 @@
 		\newpage
 		\subsection{Maximum Bipartite Matching}
 			\lstinputlisting{../Maximum_Matching.cpp}
+			\begin{itemize}
+				\item For any bipartite graph, $|$Maximum Matching$|$ == $|$Minimum Vertex Cover$|$
+				\item For any graph, $|$Minimum Edge Cover$|$ == $|$V$|$ - $|$Maximum Matching$|$
+				\item $|$Minimum Disjoint Path Cover in DAG$|$ == $|$V$|$ - $|$Maximum Matching after split vertices$|$
+				\item HALL's theory
+			\end{itemize}
 	\newpage
 	\section{2D Geometry}
 		\subsection{Basic Operations}
@@ -95,4 +101,3 @@
 			\lstinputlisting{../FastIO.cpp}
 
 \end{document}
-
