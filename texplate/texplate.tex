@@ -3,7 +3,7 @@
 %\usepackage{showframe}
 
 \usepackage{geometry}
-\geometry{left = 1.2cm, right = 1.2cm, top = 2.0cm, bottom = 1.0cm}
+\geometry{left = 1.5cm, right = 1.5cm, top = 2.0cm, bottom = 1.0cm}
 
 \usepackage{listings}
 \usepackage{color}
@@ -83,6 +83,14 @@
 				\item $|$Minimum Disjoint Path Cover in DAG$|$ == $|$V$|$ - $|$Maximum Matching after split vertices$|$
 				\item HALL's theory
 			\end{itemize}
+		\newpage
+		\subsection{Cut and Bridge}
+			\lstinputlisting{../cut_bridge.cpp}
+			\begin{itemize}
+				\item $u$ $is$ $a$ $cut$ $\Leftrightarrow \exists v, <u, v> \in T \wedge Min[v] == d[u]$
+				\item $pre$ $is$ $a$ $bridge$ $\Leftrightarrow Min[u] == d[u] - 1 \wedge \forall <u, v> \in T, Min[v] == d[u]$
+			\end{itemize}
+			
 	\newpage
 	\section{2D Geometry}
 		\subsection{Basic Operations}
