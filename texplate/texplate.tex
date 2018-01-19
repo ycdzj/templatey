@@ -49,34 +49,34 @@
 	\pagenumbering{arabic}
 	\section{String algorithm}
 		\subsection{Kmp}
-			\lstinputlisting{../Kmp.cpp}
+			\lstinputlisting{../src/String/Kmp.cpp}
 		\subsection{Longest Palindrome}
-			\lstinputlisting{../Manacher.cpp}
+			\lstinputlisting{../src/String/Manacher.cpp}
 		\subsection{Extend Kmp}
-			\lstinputlisting{../ExKmp.cpp}
+			\lstinputlisting{../src/String/ExKmp.cpp}
 		\subsection{AC Automaton}
-			\lstinputlisting{../ACAutomaton.cpp}
+			\lstinputlisting{../src/String/ACAutomaton.cpp}
 		\subsection{Suffix Arrary}
-			\lstinputlisting{../SuffixArray.cpp}
+			\lstinputlisting{../src/String/SuffixArray.cpp}
 	\newpage
 	\section{Data Structure}
 		\subsection{Segment Tree}
-			\lstinputlisting{../SegmentTree.cpp}
+			\lstinputlisting{../src/DataStructure/basic_zkw.cpp}
 		\subsection{Range Segment Tree}
-			\lstinputlisting{../range_SegmentTree.cpp}
+			\lstinputlisting{../src/DataStructure/range_SegmentTree.cpp}
 		\subsection{Binary Indexed Tree}
-			\lstinputlisting{../BIT.cpp}
+			\lstinputlisting{../src/DataStructure/BIT.cpp}
 		\subsection{Treap}
-			\lstinputlisting{../Treap.cpp}
+			\lstinputlisting{../src/DataStructure/Treap.cpp}
 		\subsection{Splay Tree}
-			\lstinputlisting{../SplayTree.cpp}
+			\lstinputlisting{../src/DataStructure/SplayTree.cpp}
 	\newpage
 	\section{Graph}
 		\subsection{Maximum Flow}
-			\lstinputlisting{../Maxflow.cpp}
+			\lstinputlisting{../src/Graph/Maxflow.cpp}
 		\newpage
 		\subsection{Maximum Bipartite Matching}
-			\lstinputlisting{../Maximum_Matching.cpp}
+			\lstinputlisting{../src/Graph/Maximum_Matching.cpp}
 			\begin{itemize}
 				\item For any bipartite graph, $|$Maximum Matching$|$ == $|$Minimum Vertex Cover$|$
 				\item For any graph, $|$Minimum Edge Cover$|$ == $|$V$|$ - $|$Maximum Matching$|$
@@ -85,7 +85,7 @@
 			\end{itemize}
 		\newpage
 		\subsection{Cut and Bridge}
-			\lstinputlisting{../cut_bridge.cpp}
+			\lstinputlisting{../src/Graph/cut_bridge.cpp}
 			\begin{itemize}
 				\item $u$ $is$ $a$ $cut$ $\Leftrightarrow \exists v, <u, v> \in T \wedge Min[v] == d[u]$
 				\item $pre$ $is$ $a$ $bridge$ $\Leftrightarrow Min[u] == d[u] - 1 \wedge \forall <u, v> \in T, Min[v] == d[u]$
@@ -94,18 +94,18 @@
 	\newpage
 	\section{2D Geometry}
 		\subsection{Basic Operations}
-			\lstinputlisting{"../2D Basic.cpp"}
+			\lstinputlisting{"../src/Geometry/2D Basic.cpp"}
 	\newpage
 	\section{Number Theory}
 		\subsection{Prime Number}
-			\lstinputlisting{../prime.cpp}
+			\lstinputlisting{../src/Math/prime.cpp}
 		\subsection{Extend Euclid}
-			\lstinputlisting{../euclid.cpp}
+			\lstinputlisting{../src/Math/euclid.cpp}
 	\newpage
 	\section{Other}
 		\subsection{Checker}
-			\lstinputlisting[language=sh]{../checker.sh}
+			\lstinputlisting[language=sh]{../src/Other/checker.sh}
 		\subsection{Fast IO}
-			\lstinputlisting{../FastIO.cpp}
+			\lstinputlisting{../src/Other/FastIO.cpp}
 
 \end{document}
