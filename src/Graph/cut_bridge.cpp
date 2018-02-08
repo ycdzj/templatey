@@ -5,36 +5,52 @@ struct Graph {
 	void init() {
 		memset(head, 0xff, sizeof(head));
 		cnt_edge = 0;
-
-		memset(vis, 0, sizeof(vis));
-		memset(cut, 0, sizeof(cut));
-		memset(bridge, 0, sizeof(bridge));
 	}
 	void add_edge(int u, int v) {
 		e[cnt_edge].v = v;
 		e[cnt_edge].next = head[u], head[u] = cnt_edge++;
 	}
 
-	bool vis[maxn], cut[maxn], bridge[maxm];
-	int d[maxn];
-	int dfs(int u, int pre_e, int d_ = 0) {
-		vis[u] = true;
-		int res = d[u] = d_, cnt_chd = 0;
-		bool flag = true;
+	bool cut[maxn], bridge[maxm];
+	int bcc_clock, cnt_bcc, cnt_stack, bccno[maxn], dfn[maxn], low[maxn];
+	struct { int u, v; } Stack[maxm];
+	void bccutil(int u, int pre) {
+		dfn[u] = low[u] = ++bcc_clock;
+		int cnt_chd = 0;
+
 		for(int i = head[u]; i != -1; i = e[i].next) {
 			int v = e[i].v;
-			if(!vis[v]) {
+			if(dfn[v] == 0) {
+				bccutil(v, u);
 				cnt_chd++;
-				int t = dfs(v, i, d_ + 1);
-				res = std::min(res, t);
-				if(t == d_) cut[u] = true;
-				else flag = false;
+				low[u] = std::min(low[u], low[v]);
+				Stack[cnt_stack++] = {u, v};
+				if(low[v] > dfn[u]) bridge[i] = true;
+				if(low[v] >= dfn[u]) {
+					cut[u] = true;
+					cnt_bcc++;
+					while(true) {
+						cnt_stack--;
+						int cur_u = Stack[cnt_stack].u, cur_v = Stack[cnt_stack].v;
+						bccno[cur_u] = bccno[cur_v] = cnt_bcc;
+						if(cur_u == u && cur_v == v) break;
+					}
+				}
 			}
-			res = std::min(res, d[v]);
+			else if(dfn[v] < dfn[u] && v != pre) {
+				Stack[cnt_stack++] = {u, v};
+				low[u] = std::min(low[u], dfn[v]);
+			}
 		}
-		if(pre_e != -1 && flag && res == d_ - 1) bridge[pre_e] = true;
-		if(pre_e == -1) cut[u] = cnt_chd > 1;
-		return res;
+		if(pre == -1 && cnt_chd <= 1) cut[u] = false;
 	}
-	//for(int i = 0; i < n; i++) if(!G.vis[i]) G.dfs(i, -1);
+	void bcc(int n) {
+		memset(cut, 0, sizeof(cut));
+		memset(bridge, 0, sizeof(bridge));
+		memset(dfn, 0, sizeof(dfn));
+		memset(bccno, 0, sizeof(bccno));
+		cnt_stack = bcc_clock = cnt_bcc = 0;
+
+		for(int i = 0; i < n; i++) if(!dfn[i]) bccutil(i, -1);
+	}
 };
