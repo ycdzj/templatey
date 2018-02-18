@@ -1,4 +1,4 @@
-\documentclass[twoside]{article}
+\documentclass[twoside, UTF8]{article}
 
 %\usepackage{showframe}
 
@@ -8,19 +8,19 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{courier}
-\renewcommand\lstlistingname{Quelltext} % Change language of section name
+\renewcommand\lstlistingname{} % Change language of section name
 \lstset{ % General setup for the package
 	language=C++,
 	frame=tb,
-	basicstyle=\footnotesize\ttfamily,
+	basicstyle=\small\ttfamily,
 	keywordstyle=\color{blue},
 	numbers=left,
-	%numbersep=5pt,
+%	numbersep=5pt,
 	numberstyle=\tiny,
 	tabsize=4,
 	breaklines=true,
 	postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}},
-	showstringspaces=false
+	showstringspaces=false	
 }
 
 \usepackage{fancyhdr}
@@ -32,12 +32,15 @@
 \usepackage{afterpage}
 \newcommand\blankpage{ \null\thispagestyle{empty}\addtocounter{page}{-1}\newpage }
 
-%\usepackage[UTF8]{ctex}
+\usepackage{ctex}
+%\usepackage{CJK}
 
 \title{Standard Code Library}
 \author{}
 
+
 \begin{document}
+%	\begin{CJK}{UTF8}{gkai}
 	\pagenumbering{gobble}
 	\maketitle
 	\afterpage{\blankpage}
@@ -73,32 +76,66 @@
 	\newpage
 	\section{Graph}
 		\subsection{Maximum Flow}
-			\lstinputlisting{../src/Graph/Maxflow.cpp}
+			\begin{flushleft}
+				最大流的dinic算法，每次先在残量网络中bfs构建层次图（level），再dfs寻找增广路。
+				\linebreak dfs中用到了当前边优化技巧。
+				\linebreak 每次add\_edge的时候都一次加两条，这样可以方便地找到反向边。
+			\end{flushleft}
+			\lstinputlisting{../src/Graph/dinic.cpp}
+			
 		\newpage
 		\subsection{Maximum Bipartite Matching}
-			\lstinputlisting{../src/Graph/Maximum_Matching.cpp}
+			\begin{flushleft}
+				求二分图最大匹配的匈牙利算法，单向边和双向边都适用。
+				\linebreak 这个和求二分图最大匹配的网络流模型还是很像的，
+				\linebreak 每次dfs寻找一条未匹配/已匹配边交错出现的路径（与寻找一条网络流模型中的增广路等价）。
+			\end{flushleft}
 			\begin{itemize}
 				\item For any bipartite graph, $|$Maximum Matching$|$ == $|$Minimum Vertex Cover$|$
 				\item For any graph, $|$Minimum Edge Cover$|$ == $|$V$|$ - $|$Maximum Matching$|$
-				\item $|$Minimum Disjoint Path Cover in DAG$|$ == $|$V$|$ - $|$Maximum Matching after split vertices$|$
+				\item DAG的最小路径覆盖：用最少的路径覆盖所有点，且每个点仅属于一条路径。方法：拆点拆成二分图，跑最大匹配。
 				\item HALL's theory
 			\end{itemize}
+			\lstinputlisting{../src/Graph/Maximum_Matching.cpp}
 		\newpage
 		\subsection{Cut and Bridge and BCC}
-			cut and bridge and BCC of undirected graph
+			\begin{flushleft}
+				求\textbf{无向图}的割点、割边（桥）、点双连通分量的tarjan算法，使用了dfn和low。
+				\linebreak bcc编号从1开始。
+			\end{flushleft}
 			\lstinputlisting{../src/Graph/cut_bridge.cpp}
 			\begin{itemize}
 				\item $u$ $is$ $a$ $cut$ $\Leftrightarrow \exists v, <u, v> \in T \wedge Min[v] == d[u]$
 				\item $pre$ $is$ $a$ $bridge$ $\Leftrightarrow Min[u] == d[u] - 1 \wedge \forall <u, v> \in T, Min[v] == d[u]$
 			\end{itemize}
-			
+		\newpage
+		\subsection{Strongly Connected Components}
+			\begin{flushleft}
+				tarjan的求强连通分量算法，还是使用dfn和low，只用树边和后向边更新low，不管cross-edge。
+				\linebreak u是其所在scc的第一个被搜到的点，当且仅当$low[u] == dfn[u]$
+				\linebreak scc编号从1开始。
+			\end{flushleft}
+			\lstinputlisting{../src/Graph/scc.cpp}
 	\newpage
 	\section{2D Geometry}
 		\subsection{Basic Operations}
+			\begin{flushleft}
+				计算几何中向量的基本操作，大致分为：加减、数乘（除）、点积（dot）、叉积（cross）、旋转、求长度、求单位向量，同时把点也当作向量。
+				\linebreak 参数不一定要传引用，成员只有两个double也快不了多少。尽量不用构造函数，太慢了。。
+			\end{flushleft}
 			\lstinputlisting{"../src/Geometry/2D Basic.cpp"}
+		\subsection{Circle}
+			\begin{flushleft}
+				和圆有关的一些操作
+				\linebreak 求两圆的交点是训练指南上的板子，返回交点个数，结果放在res中
+			\end{flushleft}
+			\lstinputlisting{"../src/Geometry/Circle.cpp"}
 	\newpage
 	\section{Number Theory}
 		\subsection{Prime Number}
+			\begin{flushleft}
+				素数筛，$a[i]$代表$i$的素因子分解式中最小的素数。
+			\end{flushleft}
 			\lstinputlisting{../src/Math/prime.cpp}
 		\subsection{Extend Euclid}
 			\lstinputlisting{../src/Math/euclid.cpp}
@@ -108,5 +145,5 @@
 			\lstinputlisting[language=sh]{../src/Other/checker.sh}
 		\subsection{Fast IO}
 			\lstinputlisting{../src/Other/FastIO.cpp}
-
+%\end{CJK}
 \end{document}

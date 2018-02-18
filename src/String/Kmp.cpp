@@ -1,20 +1,16 @@
-void getNext(const string &pat, vector<int> &next) {
-	int len = pat.length();
-	next.resize(len);
-	next[0] = -1;
-	for(int j = -1, i = 1; i < len; i++) {
-		while(j != -1 && pat[j + 1] != pat[i]) j = next[j];
-		if(pat[j + 1] == pat[i]) j++;
-		next[i] = j;
-	}
+void getNext(string &P, int next[]) {
+    next[0] = 0;
+    for(int pre = 0, i = 1; i < P.length(); i++) {
+        while(pre > 0 && P[pre] != P[i]) pre = next[pre - 1];
+        if(P[pre] == P[i]) pre++;
+        next[i] = pre;
+    }
 }
-void kmpMatch(const string &s, const string &pat, const vector<int> &next, vector<int> &kmp) {//untested
-	int len_s = s.length(), len_p = pat.length();
-	kmp.resize(len_s);
-	for(int j = -1, i = 0; i < len_s; i++) {
-		while(j != -1 && pat[j + 1] != str[i]) j = next[j];
-		if(pat[j + 1] == str[i]) j++;
-		kmp[i] = j;
-		if(j == len_p - 1) j = next[j];
-	}
+void kmpMatch(string &P, string &T, int next[], int kmp[]) {
+    for(int pre = 0, i = 0; i < T.length(); i++) {
+        while(pre > 0 && P[pre] != T[i]) pre = next[pre - 1];
+        if(P[pre] == T[i]) pre++;
+        kmp[i] = pre;
+        if(pre == P.length()) pre = next[pre - 1];
+    }
 }
