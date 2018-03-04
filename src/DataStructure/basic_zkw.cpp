@@ -17,8 +17,8 @@ struct SegmentTree {
 		for(p >>= 1; p > 0; p >>= 1) tree[p] = op(tree[p << 1], tree[p << 1 | 1]);
 	}
 	T query(int l, int r) {//[l, r]
-		int res = tree[l += n];
-		for(++l, r += n + 1; l < r; l >>= 1, r >>= 1) {
+		T res = tree[r += n];
+		for(l += n; l < r; l >>= 1, r >>= 1) {
 			if(l & 1) res = op(res, tree[l++]);
 			if(r & 1) res = op(res, tree[--r]);
 		}

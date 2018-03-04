@@ -63,13 +63,39 @@
 			\lstinputlisting{../src/String/SuffixArray.cpp}
 	\newpage
 	\section{Data Structure}
-		\subsection{Segment Tree}
+		\subsection{Basic ZKW}
+			\begin{flushleft}
+				经典的zkw神树，堆式存储结构，根节点为1，无论是时间还是空间都非常优秀。
+				\linebreak 但zkw线段树难以像递归线段树那样进行大魔改。
+				\linebreak 使用方法：init --> [] --> build --> query/update
+				\linebreak op需要满足：结合律、交换律。
+			\end{flushleft}
 			\lstinputlisting{../src/DataStructure/basic_zkw.cpp}
-		\subsection{Range Segment Tree}
+		\subsection{Segment Tree}
+			\begin{flushleft}
+				线段树（点树）可以说是十分精妙的数据结构了。这里仅给出线段树的一种设计模式，线段树的适用范围十分广泛，应当根据不同的要求，设计出不同的线段树。
+				\begin{itemize}
+					\item 节点的值：存储什么样的值才能快速完成各项操作。
+					\item merge：两个节点（线段）的合并。
+					\item pushdown：将节点的某个值下推到孩子（进行等价转化）。
+				\end{itemize}
+			\end{flushleft}
 			\lstinputlisting{../src/DataStructure/range_SegmentTree.cpp}
 		\subsection{Binary Indexed Tree}
+			\begin{flushleft}
+				树状数组或许没啥用……
+				\linebreak 能干的事zkw线段树应当也能干，码量也差不多
+				\linebreak 而且按照zkw的说法，这两种东西其实是等价的，只不过遍历的方式不同而已
+				\linebreak lowbit在某些场合（比如状压dp）可以优化一下常数，这个有用
+			\end{flushleft}
 			\lstinputlisting{../src/DataStructure/BIT.cpp}
 		\subsection{Treap}
+			\begin{flushleft}
+				写得OOP了一些，可以适应更多种情况，用了STL的allocator，性能没有下降太多。与一般log算法相比，常数大约要乘以2。
+				\linebreak 初始时仅需创建空指针（在这里即是一棵空树），大部分接口传入的都是指针的引用。
+				\linebreak 为了进一步降低常数，没有使用构造函数。(experimental)
+				\linebreak 实现的接口：size, insert, remove, select, lower\_bound, upper\_bound, contain
+			\end{flushleft}
 			\lstinputlisting{../src/DataStructure/Treap.cpp}
 		\subsection{Splay Tree}
 			\lstinputlisting{../src/DataStructure/SplayTree.cpp}
