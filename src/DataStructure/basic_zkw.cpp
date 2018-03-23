@@ -1,5 +1,5 @@
 template <typename T>
-struct SegmentTree {
+struct BasicZKW {
 	static const int maxn = 1e6;
 	T tree[maxn * 2];
 	int n;
