@@ -104,8 +104,11 @@
 		\subsection{Maximum Flow}
 			\begin{flushleft}
 				最大流的dinic算法，每次先在残量网络中bfs构建层次图（level），再dfs寻找增广路。
-				\linebreak dfs中用到了当前边优化技巧。
-				\linebreak 每次add\_edge的时候都一次加两条，这样可以方便地找到反向边。
+				\linebreak 需要注意的地方:
+				\begin{itemize}
+					\item dinic\_dfs里的当前边优化
+					\item 每次add\_edge的时候都一次加两条，方便找到反向边。（果然不能读书读死了啊。。只要不用邻接矩阵就可以加入反向边的）
+				\end{itemize}
 			\end{flushleft}
 			\lstinputlisting{../src/Graph/dinic.cpp}
 			
