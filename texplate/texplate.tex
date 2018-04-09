@@ -93,7 +93,7 @@
 			\begin{flushleft}
 				写得OOP了一些，可以适应更多种情况，用了STL的allocator，性能没有下降太多。与一般log算法相比，常数大约要乘以2。
 				\linebreak 初始时仅需创建空指针（在这里即是一棵空树），大部分接口传入的都是指针的引用。
-				\linebreak 为了进一步降低常数，没有使用构造函数。(experimental)
+				\linebreak 如果常数还是过大，可以考虑不使用构造函数
 				\linebreak 实现的接口：size, insert, remove, select, lower\_bound, upper\_bound, contain
 			\end{flushleft}
 			\lstinputlisting{../src/DataStructure/Treap.cpp}
@@ -110,18 +110,34 @@
 			\lstinputlisting{../src/Graph/dinic.cpp}
 			
 		\newpage
-		\subsection{Maximum Bipartite Matching}
+		\subsection{Matching and Covers}
 			\begin{flushleft}
-				求二分图最大匹配的匈牙利算法，单向边和双向边都适用。
-				\linebreak 这个和求二分图最大匹配的网络流模型还是很像的，
+				定义：
+				\begin{itemize}
+					\item A \textbf{vertex cover} of a graph is a set of vertices such that each edge of the graph is incident to at least one vertex of the set.
+					\item An \textbf{edge cover} of a graph is a set of edges such that every vertex of the graph is incident to at least one edge of the set.
+					\item A \textbf{matching} or \textbf{independent edge set} of a graph is a set of edges without common vertices.
+					\item An \textbf{independent set} of a graph is a set $S$ of vertices such that for every two vertices in $S$, there is no edge connecting the two.
+					\linebreak 以上都是定义在任何类型的{\tiny (无向？)}图上的？
+					\item A \textbf{path cover} of a directed graph is a set of directed paths such that every vertex of the graph belongs to \textbf{exactly} one path.
+				\end{itemize}
+			\end{flushleft}
+		
+			\begin{flushleft}
+				定理：
+				\begin{itemize}
+					\item 对于全部二分图, $|$Minimum Vertex Cover$|$ $=$ $|$Maximum Matching$|$
+					\item 对于全部{\tiny (无向？)}图$G=(V,E)$, $|$Minimum Edge Cover$|$ $=$ $|$V$|$ - $|$Maximum Matching$|$
+					\item 对于全部DAG，按一般方法把一个点拆成两个，令新二分图的最大匹配为x，$|$原图的最小路径覆盖$|$=$|V| - x$
+					\item 对于全部不带有向环的传递闭包，$|$最大独立集$|$ $=$ $|$最小路径覆盖$|$ (为啥啊？？？)
+					\item HALL's theory
+				\end{itemize}
+			\end{flushleft}
+			
+			\begin{flushleft}
+				求\textbf{二分图}最大匹配的匈牙利算法\textbf{(只适用于二分图)}，单向边和双向边都适用。
 				\linebreak 每次dfs寻找一条未匹配/已匹配边交错出现的路径（与寻找一条网络流模型中的增广路等价）。
 			\end{flushleft}
-			\begin{itemize}
-				\item For any bipartite graph, $|$Maximum Matching$|$ == $|$Minimum Vertex Cover$|$
-				\item For any graph, $|$Minimum Edge Cover$|$ == $|$V$|$ - $|$Maximum Matching$|$
-				\item DAG的最小路径覆盖：用最少的路径覆盖所有点，且每个点仅属于一条路径。方法：拆点拆成二分图，跑最大匹配。
-				\item HALL's theory
-			\end{itemize}
 			\lstinputlisting{../src/Graph/Maximum_Matching.cpp}
 		\newpage
 		\subsection{Cut and Bridge and BCC}
