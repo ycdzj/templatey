@@ -83,10 +83,12 @@
 			\lstinputlisting{../src/DataStructure/SegmentTree.cpp}
 		\subsection{Binary Indexed Tree}
 			\begin{flushleft}
-				树状数组或许没啥用……
-				\linebreak 能干的事zkw线段树应当也能干，码量也差不多
-				\linebreak 而且按照zkw的说法，这两种东西其实是等价的，只不过遍历的方式不同而已
-				\linebreak lowbit在某些场合（比如状压dp）可以优化一下常数，这个有用
+				需要注意的地方：
+				\begin{itemize}
+					\item 下标从1开始，使用一倍存储空间
+					\item 树状数组的第i个位置存放原数组以$a_{i}$为最后一个元素的lowbit(i)个元素的和
+					\item lowbit可用来快速查找二进制表示中最低位的1
+				\end{itemize}
 			\end{flushleft}
 			\lstinputlisting{../src/DataStructure/BIT.cpp}
 		\subsection{Treap}
@@ -103,6 +105,13 @@
 	\section{Graph}
 		\subsection{Maximum Flow}
 			\begin{flushleft}
+				最大流的一些知识点：
+				\begin{itemize}
+					\item 流网络的切割(净流量、容量)
+					\item 残量网络的定义、增广路对残量网络的增广
+					\item 最大流最小割定理
+					\item FORD-FULKERSON方法、EK算法
+				\end{itemize}
 				最大流的dinic算法，每次先在残量网络中bfs构建层次图（level），再dfs寻找增广路。
 				\linebreak 需要注意的地方:
 				\begin{itemize}
@@ -111,7 +120,12 @@
 				\end{itemize}
 			\end{flushleft}
 			\lstinputlisting{../src/Graph/dinic.cpp}
-			
+		\newpage
+		\subsection{Min Cost Flow}
+			\begin{flushleft}
+				把EK算法的BFS改成了SPFA。
+			\end{flushleft}
+			\lstinputlisting{../src/Graph/minCostFlow.cpp}
 		\newpage
 		\subsection{Matching and Covers}
 			\begin{flushleft}
