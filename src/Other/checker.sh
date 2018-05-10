@@ -8,12 +8,14 @@ fi
 printf "enter number of attempts:"
 read N
 
+RAND_FILE=rand.txt
 i=1
 while [ $i -le $N ];
 do
 	FILENAME=attempt_${i}.txt
 	printf "attempt `echo $i`: generating..."
-	./gen.out > $FILENAME
+	echo $i > $RAND_FILE
+	./gen.out < $RAND_FILE > $FILENAME
 	printf "code1 running..."
 	./code1.out < $FILENAME > code1_output.txt
 	printf "code2 running..."
