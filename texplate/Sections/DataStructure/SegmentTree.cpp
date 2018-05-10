@@ -13,6 +13,7 @@ class SegmentTree {
 		root.s = 0;
 	}
 public:
+	//root节点对应的线段是[left, right]
 	void add(int root, int left, int right, int l, int r, ll d) {
 		if(right < l || r < left) return;
 		if(l <= left && right <= r) tree[root].s += d;

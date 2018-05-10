@@ -33,14 +33,12 @@
 \newcommand\blankpage{ \null\thispagestyle{empty}\addtocounter{page}{-1}\newpage }
 
 \usepackage{ctex}
-%\usepackage{CJK}
 
 \title{Standard Code Library}
 \author{}
 
 
 \begin{document}
-%	\begin{CJK}{UTF8}{gkai}
 	\pagenumbering{gobble}
 	\maketitle
 	\afterpage{\blankpage}
@@ -50,159 +48,10 @@
 
 	\newpage
 	\pagenumbering{arabic}
-	\section{String algorithm}
-		\subsection{Kmp}
-			\lstinputlisting{../src/String/Kmp.cpp}
-		\subsection{Longest Palindrome}
-			\lstinputlisting{../src/String/Manacher.cpp}
-		\subsection{Extend Kmp}
-			\lstinputlisting{../src/String/ExKmp.cpp}
-		\subsection{AC Automaton}
-			\lstinputlisting{../src/String/ACAutomaton.cpp}
-		\subsection{Suffix Arrary}
-			\lstinputlisting{../src/String/SuffixArray.cpp}
-	\newpage
-	\section{Data Structure}
-		\subsection{Basic ZKW}
-			\begin{flushleft}
-				经典的zkw神树，堆式存储结构，根节点为1，两倍空间。
-				\linebreak 使用方法：init --> [] --> build --> query/update
-				\linebreak op需要满足：结合律、交换律。
-			\end{flushleft}
-			\lstinputlisting{../src/DataStructure/basic_zkw.cpp}
-		\subsection{Segment Tree}
-			\begin{flushleft}
-				这里仅给出线段树的一种设计模式，线段树的适用范围十分广泛，应当根据不同的要求，设计出不同的线段树。
-				\begin{itemize}
-					\item 节点的值：存储什么样的信息才能快速完成各项操作。
-					\item pushdown：把节点的信息等价转化给孩子（将更改下推）。
-					\item merge：把两个节点合并（根据下层的值构造上层的值）。
-				\end{itemize}
-				下面给出一个例子，实现了区间更改/区间查询最小值的功能。
-			\end{flushleft}
-			\lstinputlisting{../src/DataStructure/SegmentTree.cpp}
-		\subsection{Binary Indexed Tree}
-			\begin{flushleft}
-				需要注意的地方：
-				\begin{itemize}
-					\item 下标从1开始，使用一倍存储空间
-					\item 树状数组的第i个位置存放原数组以$a_{i}$为最后一个元素的lowbit(i)个元素的和
-					\item lowbit可用来快速查找二进制表示中最低位的1
-				\end{itemize}
-			\end{flushleft}
-			\lstinputlisting{../src/DataStructure/BIT.cpp}
-		\subsection{Treap}
-			\begin{flushleft}
-				写得OOP了一些，可以适应更多种情况，用了STL的allocator，性能没有下降太多。与一般log算法相比，常数大约要乘以2。
-				\linebreak 初始时仅需创建空指针（在这里即是一棵空树），大部分接口传入的都是指针的引用。
-				\linebreak 如果常数还是过大，可以考虑不使用构造函数
-				\linebreak 实现的接口：size, insert, remove, select, lower\_bound, upper\_bound, contain
-			\end{flushleft}
-			\lstinputlisting{../src/DataStructure/Treap.cpp}
-		\subsection{Splay Tree}
-			\lstinputlisting{../src/DataStructure/SplayTree.cpp}
-	\newpage
-	\section{Graph}
-		\subsection{Maximum Flow}
-			\begin{flushleft}
-				最大流的一些知识点：
-				\begin{itemize}
-					\item 流网络的切割(净流量、容量)
-					\item 残量网络的定义、增广路对残量网络的增广
-					\item 最大流最小割定理
-					\item FORD-FULKERSON方法、EK算法
-				\end{itemize}
-				最大流的dinic算法，每次先在残量网络中bfs构建层次图（level），再dfs寻找增广路。
-				\linebreak 需要注意的地方:
-				\begin{itemize}
-					\item dinic\_dfs里的当前边优化
-					\item 每次add\_edge的时候都一次加两条，方便找到反向边。（果然不能读书读死了啊。。只要不用邻接矩阵就可以加入反向边的）
-				\end{itemize}
-			\end{flushleft}
-			\lstinputlisting{../src/Graph/dinic.cpp}
-		\newpage
-		\subsection{Min Cost Flow}
-			\begin{flushleft}
-				把EK算法的BFS改成了SPFA。
-			\end{flushleft}
-			\lstinputlisting{../src/Graph/minCostFlow.cpp}
-		\newpage
-		\subsection{Matching and Covers}
-			\begin{flushleft}
-				定义：
-				\begin{itemize}
-					\item A \textbf{vertex cover} of a graph is a set of vertices such that each edge of the graph is incident to at least one vertex of the set.
-					\item An \textbf{edge cover} of a graph is a set of edges such that every vertex of the graph is incident to at least one edge of the set.
-					\item A \textbf{matching} or \textbf{independent edge set} of a graph is a set of edges without common vertices.
-					\item An \textbf{independent set} of a graph is a set $S$ of vertices such that for every two vertices in $S$, there is no edge connecting the two.
-					\linebreak 以上都是定义在任何类型的{\tiny (无向？)}图上的？
-					\item A \textbf{path cover} of a directed graph is a set of directed paths such that every vertex of the graph belongs to \textbf{exactly} one path.
-				\end{itemize}
-			\end{flushleft}
-		
-			\begin{flushleft}
-				定理：
-				\begin{itemize}
-					\item 对于全部二分图, $|$Minimum Vertex Cover$|$ $=$ $|$Maximum Matching$|$
-					\item 对于全部{\tiny (无向？)}图$G=(V,E)$, $|$Minimum Edge Cover$|$ $=$ $|$V$|$ - $|$Maximum Matching$|$
-					\item 对于全部DAG，按一般方法把一个点拆成两个，令新二分图的最大匹配为x，$|$原图的最小路径覆盖$|$=$|V| - x$
-					\item 对于全部不带有向环的传递闭包，$|$最大独立集$|$ $=$ $|$最小路径覆盖$|$ (为啥啊？？？)
-					\item HALL's theory
-				\end{itemize}
-			\end{flushleft}
-			
-			\begin{flushleft}
-				求\textbf{二分图}最大匹配的匈牙利算法\textbf{(只适用于二分图)}，单向边和双向边都适用。
-				\linebreak 每次dfs寻找一条未匹配/已匹配边交错出现的路径（与寻找一条网络流模型中的增广路等价）。
-			\end{flushleft}
-			\lstinputlisting{../src/Graph/Maximum_Matching.cpp}
-		\newpage
-		\subsection{Cut and Bridge and BCC}
-			\begin{flushleft}
-				求\textbf{无向图}的割点、割边（桥）、点双连通分量的tarjan算法，使用了dfn和low。
-				\linebreak bcc编号从1开始。
-			\end{flushleft}
-			\lstinputlisting{../src/Graph/cut_bridge.cpp}
-			\begin{itemize}
-				\item $u$ $is$ $a$ $cut$ $\Leftrightarrow \exists v, <u, v> \in T \wedge Min[v] == d[u]$
-				\item $pre$ $is$ $a$ $bridge$ $\Leftrightarrow Min[u] == d[u] - 1 \wedge \forall <u, v> \in T, Min[v] == d[u]$
-			\end{itemize}
-		\newpage
-		\subsection{Strongly Connected Components}
-			\begin{flushleft}
-				tarjan的求强连通分量算法，还是使用dfn和low，只用树边和后向边更新low，不管cross-edge。
-				\linebreak u是其所在scc的第一个被搜到的点，当且仅当$low[u] == dfn[u]$
-				\linebreak scc编号从1开始。
-			\end{flushleft}
-			\lstinputlisting{../src/Graph/scc.cpp}
-	\newpage
-	\section{2D Geometry}
-		\subsection{Basic Operations}
-			\begin{flushleft}
-				计算几何中向量的基本操作，大致分为：加减、数乘（除）、点积（dot）、叉积（cross）、旋转、求长度、求单位向量，同时把点也当作向量。
-				\linebreak 参数不一定要传引用，成员只有两个double也快不了多少。尽量不用构造函数，太慢了。。
-			\end{flushleft}
-			\lstinputlisting{"../src/Geometry/2D Basic.cpp"}
-		\subsection{Circle}
-			\begin{flushleft}
-				和圆有关的一些操作
-				\linebreak 求两圆的交点是训练指南上的板子，返回交点个数，结果放在res中
-			\end{flushleft}
-			\lstinputlisting{"../src/Geometry/Circle.cpp"}
-	\newpage
-	\section{Number Theory}
-		\subsection{Prime Number}
-			\begin{flushleft}
-				素数筛，$a[i]$代表$i$的素因子分解式中最小的素数。
-			\end{flushleft}
-			\lstinputlisting{../src/Math/prime.cpp}
-		\subsection{Extend Euclid}
-			\lstinputlisting{../src/Math/euclid.cpp}
-	\newpage
-	\section{Other}
-		\subsection{Checker}
-			\lstinputlisting[language=sh]{../src/Other/checker.sh}
-		\subsection{Fast IO}
-			\lstinputlisting{../src/Other/FastIO.cpp}
-%\end{CJK}
+	\include{Sections/DataStructure/DataStructure}
+	\include{Sections/Graph/Graph}
+	\include{Sections/Geometry/Geometry}
+	\include{Sections/Math/Math}
+	\include{Sections/String/String}
+	\include{Sections/Other/Other}
 \end{document}

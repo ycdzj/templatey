@@ -1,0 +1,72 @@
+\newpage
+\section{Graph}
+	\subsection{Maximum Flow}
+		\begin{flushleft}
+			最大流的一些知识点：
+			\begin{itemize}
+				\item 流网络的切割(净流量、容量)
+				\item 残量网络的定义、增广路对残量网络的增广
+				\item 最大流最小割定理
+				\item FORD-FULKERSON方法、EK算法
+			\end{itemize}
+			最大流的dinic算法，每次先在残量网络中bfs构建层次图（level），再dfs寻找增广路。
+			\linebreak 需要注意的地方:
+			\begin{itemize}
+				\item dinic\_dfs里的当前边优化
+				\item 每次add\_edge的时候都一次加两条，方便找到反向边。（果然不能读书读死了啊。。只要不用邻接矩阵就可以加入反向边的）
+			\end{itemize}
+		\end{flushleft}
+		\lstinputlisting{Sections/Graph/dinic.cpp}
+	\newpage
+	\subsection{Min Cost Flow}
+		\begin{flushleft}
+			把EK算法的BFS改成了SPFA。
+		\end{flushleft}
+		\lstinputlisting{Sections/Graph/minCostFlow.cpp}
+	\newpage
+	\subsection{Matching and Covers}
+		\begin{flushleft}
+			定义：
+			\begin{itemize}
+				\item A \textbf{vertex cover} of a graph is a set of vertices such that each edge of the graph is incident to at least one vertex of the set.
+				\item An \textbf{edge cover} of a graph is a set of edges such that every vertex of the graph is incident to at least one edge of the set.
+				\item A \textbf{matching} or \textbf{independent edge set} of a graph is a set of edges without common vertices.
+				\item An \textbf{independent set} of a graph is a set $S$ of vertices such that for every two vertices in $S$, there is no edge connecting the two.
+				\linebreak 以上都是定义在任何类型的{\tiny (无向？)}图上的？
+				\item A \textbf{path cover} of a directed graph is a set of directed paths such that every vertex of the graph belongs to \textbf{exactly} one path.
+			\end{itemize}
+		\end{flushleft}
+		\begin{flushleft}
+			定理：
+			\begin{itemize}
+				\item 对于全部二分图, $|$Minimum Vertex Cover$|$ $=$ $|$Maximum Matching$|$
+				\item 对于全部{\tiny (无向？)}图$G=(V,E)$, $|$Minimum Edge Cover$|$ $=$ $|$V$|$ - $|$Maximum Matching$|$
+				\item 对于全部DAG，按一般方法把一个点拆成两个，令新二分图的最大匹配为x，$|$原图的最小路径覆盖$|$=$|V| - x$
+				\item 对于全部不带有向环的传递闭包，$|$最大独立集$|$ $=$ $|$最小路径覆盖$|$ (为啥啊？？？)
+				\item HALL's theory
+			\end{itemize}
+		\end{flushleft}
+		\begin{flushleft}
+			求\textbf{二分图}最大匹配的匈牙利算法\textbf{(只适用于二分图)}，单向边和双向边都适用。
+			\linebreak 每次dfs寻找一条未匹配/已匹配边交错出现的路径（与寻找一条网络流模型中的增广路等价）。
+		\end{flushleft}
+		\lstinputlisting{Sections/Graph/Maximum_Matching.cpp}
+	\newpage
+	\subsection{Cut and Bridge and BCC}
+		\begin{flushleft}
+			求\textbf{无向图}的割点、割边（桥）、点双连通分量的tarjan算法，使用了dfn和low。
+			\linebreak bcc编号从1开始。
+		\end{flushleft}
+		\lstinputlisting{Sections/Graph/cut_bridge.cpp}
+		\begin{itemize}
+			\item $u$ $is$ $a$ $cut$ $\Leftrightarrow \exists v, <u, v> \in T \wedge Min[v] == d[u]$
+			\item $pre$ $is$ $a$ $bridge$ $\Leftrightarrow Min[u] == d[u] - 1 \wedge \forall <u, v> \in T, Min[v] == d[u]$
+		\end{itemize}
+	\newpage
+	\subsection{Strongly Connected Components}
+		\begin{flushleft}
+			tarjan的求强连通分量算法，还是使用dfn和low，只用树边和后向边更新low，不管cross-edge。
+			\linebreak u是其所在scc的第一个被搜到的点，当且仅当$low[u] == dfn[u]$
+			\linebreak scc编号从1开始。
+		\end{flushleft}
+		\lstinputlisting{Sections/Graph/scc.cpp}

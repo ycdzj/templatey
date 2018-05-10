@@ -1,0 +1,56 @@
+\newpage
+\section{Data Structure}
+	\subsection{Basic ZKW}
+		\begin{flushleft}
+			zkw神树，堆式存储结构，根节点为1，两倍空间。
+			\linebreak 使用方法：init --> [] --> build --> query/update
+			\linebreak op需要满足：结合律、交换律。
+		\end{flushleft}
+		\lstinputlisting{Sections/DataStructure/basic_zkw.cpp}
+	\newpage
+	\subsection{Segment Tree}
+		\begin{flushleft}
+			这里仅给出线段树的一种设计模式，线段树的适用范围十分广泛，应当根据不同的要求，设计出不同的线段树。
+			\begin{itemize}
+				\item 节点的值：存储什么样的信息才能快速完成各项操作。
+				\item pushdown：把节点的信息等价转化给孩子（将更改下推）。
+				\item merge：把两个节点合并（根据下层的值构造上层的值）。
+			\end{itemize}
+			下面给出一个例子，实现了区间更改/区间查询最小值的功能。
+		\end{flushleft}
+		\lstinputlisting{Sections/DataStructure/SegmentTree.cpp}
+	\newpage
+	\subsection{Persistent Segment Tree}
+		\begin{flushleft}
+			\begin{itemize}
+				\item 初学Persistent DS, MIT的公开课还没看明白。
+				\item pointer machine
+				\item version
+				\item partial / full persistent, thinking / method / analysis
+			\end{itemize}
+			下面是一棵支持单点修改、区间求和的持久化线段树。
+		\end{flushleft}
+		\lstinputlisting{Sections/DataStructure/psgt.cpp}
+	\newpage
+	\subsection{Binary Indexed Tree}
+		\begin{flushleft}
+			需要注意的地方：
+			\begin{itemize}
+				\item 下标从1开始，使用一倍存储空间
+				\item 树状数组的第i个位置存放原数组以$a_{i}$为最后一个元素的lowbit(i)个元素的和
+				\item lowbit可用来快速查找二进制表示中最低位的1
+			\end{itemize}
+		\end{flushleft}
+		\lstinputlisting{Sections/DataStructure/BIT.cpp}
+	\newpage
+	\subsection{Treap}
+		\begin{flushleft}
+			写得OOP了一些，可以适应更多种情况，用了STL的allocator，性能没有下降太多。与一般log算法相比，常数大约要乘以2。
+			\linebreak 初始时仅需创建空指针（在这里即是一棵空树），大部分接口传入的都是指针的引用。
+			\linebreak 如果常数还是过大，可以考虑不使用构造函数
+			\linebreak 实现的接口：size, insert, remove, select, lower\_bound, upper\_bound, contain
+		\end{flushleft}
+		\lstinputlisting{Sections/DataStructure/Treap.cpp}
+	\newpage
+	\subsection{Splay Tree}
+		\lstinputlisting{Sections/DataStructure/SplayTree.cpp}
