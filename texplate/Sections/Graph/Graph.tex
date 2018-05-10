@@ -1,3 +1,4 @@
+\newpage
 \section{Graph}
 	\subsection{Maximum Flow}
 		\begin{flushleft}
@@ -16,14 +17,12 @@
 			\end{itemize}
 		\end{flushleft}
 		\lstinputlisting{Sections/Graph/dinic.cpp}
-
 	\newpage
 	\subsection{Min Cost Flow}
 		\begin{flushleft}
 			把EK算法的BFS改成了SPFA。
 		\end{flushleft}
 		\lstinputlisting{Sections/Graph/minCostFlow.cpp}
-
 	\newpage
 	\subsection{Matching and Covers}
 		\begin{flushleft}
@@ -37,7 +36,6 @@
 				\item A \textbf{path cover} of a directed graph is a set of directed paths such that every vertex of the graph belongs to \textbf{exactly} one path.
 			\end{itemize}
 		\end{flushleft}
-
 		\begin{flushleft}
 			定理：
 			\begin{itemize}
@@ -48,13 +46,11 @@
 				\item HALL's theory
 			\end{itemize}
 		\end{flushleft}
-		
 		\begin{flushleft}
 			求\textbf{二分图}最大匹配的匈牙利算法\textbf{(只适用于二分图)}，单向边和双向边都适用。
 			\linebreak 每次dfs寻找一条未匹配/已匹配边交错出现的路径（与寻找一条网络流模型中的增广路等价）。
 		\end{flushleft}
 		\lstinputlisting{Sections/Graph/Maximum_Matching.cpp}
-
 	\newpage
 	\subsection{Cut and Bridge and BCC}
 		\begin{flushleft}
@@ -66,7 +62,6 @@
 			\item $u$ $is$ $a$ $cut$ $\Leftrightarrow \exists v, <u, v> \in T \wedge Min[v] == d[u]$
 			\item $pre$ $is$ $a$ $bridge$ $\Leftrightarrow Min[u] == d[u] - 1 \wedge \forall <u, v> \in T, Min[v] == d[u]$
 		\end{itemize}
-
 	\newpage
 	\subsection{Strongly Connected Components}
 		\begin{flushleft}
