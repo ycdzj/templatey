@@ -34,6 +34,6 @@ Point getLineProjection(const Line &l, const Point &p) {
 	double t = dot(l.v, AP) / dot(l.v, l.v);
 	return l.p + l.v * t;
 }
-	friend double angle(const Vector &a, const Vector &b) {
-		return acos(dot(a, b) / a.length() / b.length());
-	}
+double angle(const Vector &a, const Vector &b) {
+	return acos(dot(a, b) / a.length() / b.length());
+}
