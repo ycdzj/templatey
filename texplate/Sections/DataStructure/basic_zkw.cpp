@@ -1,7 +1,7 @@
 template <typename T>
 struct BasicZKW {
-	static const int maxn = 1e6;
-	T tree[maxn * 2];
+	static const int MAXN = 1e6;
+	T tree[MAXN * 2];
 	int n;
 	std::function<T(T, T)> op;
 
