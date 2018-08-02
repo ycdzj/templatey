@@ -1,6 +1,6 @@
 struct Graph {
-	struct { int v, next; } e[maxm];
-	int head[maxn], cnt_edge;
+	struct { int v, next; } e[MAXM];
+	int head[MAXN], cnt_edge;
 	void add_edge(int u, int v) {
 		e[cnt_edge] = {v, head[u]};
 		head[u] = cnt_edge++;
@@ -10,9 +10,9 @@ struct Graph {
 		cnt_edge = 0;
 	}
 
-	int dfn[maxn], low[maxn], scc_clock;
-	int scc_stk[maxn], cnt_stk;
-	int sccno[maxn], cnt_scc;
+	int dfn[MAXN], low[MAXN], scc_clock;
+	int scc_stk[MAXN], cnt_stk;
+	int sccno[MAXN], cnt_scc;
 
 	void scc_dfs(int u) {
 		dfn[u] = low[u] = ++scc_clock;
