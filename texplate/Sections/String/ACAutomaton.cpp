@@ -1,53 +1,48 @@
-class ACAutomaton {
-	static const int maxn = 3e6;
-	struct { int v, next; } e[maxn];
-	int head[maxn], cnt_e, cnt_v;
-	inline void add_edge(int u, int v) {
-		e[cnt_e].v = v, e[cnt_e].next = head[u];
-		head[u] = cnt_e++;
+struct Node {
+	Node *next[26], *fail;
+	int end;
+};
+struct ACA {
+	Node node[MAXN];
+	int cnt_node;
+	Node* new_node() {
+		memset(&node[cnt_node], 0, sizeof(node[cnt_node]));
+		return &node[cnt_node++];
 	}
-	char ch[maxn];
-	int cnt[maxn], fail[maxn], fail_ocr[maxn];
-	inline int add(int root, char c) {
-		ch[++cnt_v] = c;
-		add_edge(root, cnt_v);
-		return cnt_v;
-	}
-	inline int get_next(int root, char c) {
-		for(int i = head[root]; i != -1; i = e[i].next)
-			if(ch[e[i].v] == c) return e[i].v;
-		return -1;
-	}
-public:
+	Node* root;
 	void init() {
-		memset(head, 0xff, sizeof(head));
-		cnt_e = cnt_v = 0;
+		cnt_node = 0;
+		root = new_node();
 	}
-	void insert(const string &str) {
-		int p = 0, len = str.length();
+	void insert(char *str, int len) {
+		Node* cur = root;
 		for(int i = 0; i < len; i++) {
-			int next = get_next(p, str[i]);
-			if(next == -1) next = add(p, str[i]);
-			p = next;
+			if(cur->next[str[i] - 'a'] == 0) {
+				cur->next[str[i] - 'a'] = new_node();
+			}
+			cur = cur->next[str[i] - 'a'];
 		}
-		cnt[p]++;
+		cur->end++;
 	}
 	void build() {
-		queue<int> q;
-		q.push(0), fail[0] = 0;
-		while(!q.empty()) {
-			int u = q.front(); q.pop();
-			for(int i = head[u]; i != -1; i = e[i].next) {
-				fail[e[i].v] = 0, q.emplace(e[i].v);
-				for(int t = fail[u]; t != 0; t = fail[t]) {
-					int v = get_next(t, ch[e[i].v]);
-					if(v != -1) {
-						fail[e[i].v] = v;
-						break;
-					}
+		std::queue<Node*> que;
+		root->fail = root;
+		for(int i = 0; i < 26; i++) {
+			if(root->next[i] == 0) root->next[i] = root;
+			else {
+				root->next[i]->fail = root;
+				que.push(root->next[i]);
+			}
+		}
+		while(!que.empty()) {
+			Node *u = que.front(); que.pop();
+			for(int i = 0; i < 26; i++) {
+				if(u->next[i] == 0) u->next[i] = u->fail->next[i];
+				else {
+					u->next[i]->fail = u->fail->next[i];
+					que.push(u->next[i]);
 				}
 			}
-			fail_ocr[u] = cnt[fail[u]] > 0 ? fail[u] : fail_ocr[fail[u]];
 		}
 	}
-};
+} ac;

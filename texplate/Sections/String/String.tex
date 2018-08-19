@@ -1,11 +1,24 @@
 \section{String algorithm}
+	\subsection{AC Automaton}
+		\begin{itemize}
+			\item 状态的fail与KMP相似，指向与当前状态的后缀相等的最长前缀
+		\end{itemize}
+		\lstinputlisting{Sections/String/ACAutomaton.cpp}
+	\subsection{Suffix Automaton}
+		\begin{flushleft}
+			需要注意的知识点：
+			\begin{itemize}
+				\item 每个状态对应一个右端点right集合（等价类），串的长度为[min, max]，短了集合变大，长了集合变小
+				\item parent树，根为全集，越往下串长越长，max(父亲) + 1 == min(儿子)
+				\item 子串是后缀的前缀
+			\end{itemize}
+		\end{flushleft}
+		\lstinputlisting{Sections/String/SAM.cpp}
 	\subsection{Kmp}
 		\lstinputlisting{Sections/String/Kmp.cpp}
 	\subsection{Longest Palindrome}
 		\lstinputlisting{Sections/String/Manacher.cpp}
 	\subsection{Extend Kmp}
 		\lstinputlisting{Sections/String/ExKmp.cpp}
-	\subsection{AC Automaton}
-		\lstinputlisting{Sections/String/ACAutomaton.cpp}
 	\subsection{Suffix Arrary}
 		\lstinputlisting{Sections/String/SuffixArray.cpp}

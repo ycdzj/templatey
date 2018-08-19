@@ -1,6 +1,5 @@
 template <typename T>
 struct BasicZKW {
-	static const int MAXN = 1e6;
 	T tree[MAXN * 2];
 	int n;
 	std::function<T(T, T)> op;
@@ -17,8 +16,9 @@ struct BasicZKW {
 		for(p >>= 1; p > 0; p >>= 1) tree[p] = op(tree[p << 1], tree[p << 1 | 1]);
 	}
 	T query(int l, int r) {//[l, r]
-		T res = tree[r += n];
-		for(l += n; l < r; l >>= 1, r >>= 1) {
+		l += n; r += n;
+		T res = tree[r];
+		for(; l < r; l >>= 1, r >>= 1) {
 			if(l & 1) res = op(res, tree[l++]);
 			if(r & 1) res = op(res, tree[--r]);
 		}
