@@ -1,5 +1,5 @@
 template <typename T>
-struct BasicZKW {
+struct ZKW {
 	T tree[MAXN * 2];
 	int n;
 	std::function<T(T, T)> op;

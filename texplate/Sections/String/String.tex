@@ -10,15 +10,20 @@
 			\begin{itemize}
 				\item 每个状态对应一个右端点right集合（等价类），串的长度为[min, max]，短了集合变大，长了集合变小
 				\item parent树，根为全集，越往下串长越长，max(父亲) + 1 == min(儿子)
-				\item 子串是后缀的前缀
+				\item 子串是后缀的前缀，SAM经常被用来判断子串/统计子串个数
 			\end{itemize}
 		\end{flushleft}
 		\lstinputlisting{Sections/String/SAM.cpp}
 	\subsection{Kmp}
 		\lstinputlisting{Sections/String/Kmp.cpp}
-	\subsection{Longest Palindrome}
+	\subsection{Manacher}
 		\lstinputlisting{Sections/String/Manacher.cpp}
 	\subsection{Extend Kmp}
 		\lstinputlisting{Sections/String/ExKmp.cpp}
 	\subsection{Suffix Arrary}
+		\begin{flushleft}
+			\begin{itemize}
+				\item $在da函数中，rank[i]的含义是后缀i对应的“值”，两个后缀的前2^k个字符相同时，对应的rank也相同。计算完height后，rank[i]代表后缀i在sa[]中的位置。$
+			\end{itemize}
+		\end{flushleft}
 		\lstinputlisting{Sections/String/SuffixArray.cpp}

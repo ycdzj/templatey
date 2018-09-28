@@ -1,87 +1,43 @@
-struct SuffixArray {
-	char *str;
-	int len;
-	int pos[maxn], rank[maxn];
-	SegmentTree<int> lcp;
-
-	void build(char *str, int len) {
-		this->str = str, this->len = len;
-		static bool begin[2][maxn];
-		for(int i = 0; i < len; i++) pos[i] = i;
-		std::sort(pos, pos + len, [&str](int a, int b)->bool{return str[a] < str[b];});
-		for(int i = 0, b = 0; i < len; i++) {
-			if(str[pos[i]] != str[pos[b]]) b = i;
-			begin[0][i] = begin[1][i] = b == i;
+void count(int *a, int *b, int *val, int n, int m) {//[0, n) [0, m]
+	static int cnt[MAXN];
+	for(int i = 0; i <= m; i++) cnt[i] = 0;
+	for(int i = 0; i < n; i++) cnt[val[a[i]]]++;
+	for(int i = 1; i <= m; i++) cnt[i] += cnt[i - 1];
+	for(int i = n - 1; i >= 0; i--) b[--cnt[val[a[i]]]] = a[i];
+}
+void da(int *str, int *sa, int *rank, int n, int m) {
+	static int sa_[MAXN];
+	for(int i = 0; i < n; i++) sa_[i] = i;
+	for(int i = 0; i < n; i++) rank[i] = str[i];
+	count(sa_, sa, rank, n, m);
+	for(int k = 0; (1 << k) < n; k++) {
+		int l = (1 << k), p = 0;
+		for(int i = n - l; i < n; i++) sa_[p++] = i;
+		for(int i = 0; i < n; i++) if(sa[i] >= l) sa_[p++] = sa[i] - l;
+		count(sa_, sa, rank, n, m);
+		int *rank_ = sa_;
+		m = 0;
+		for(int i = 0; i < n; i++) {
+			if(i > 0) {
+				if(rank[sa[i]] != rank[sa[i - 1]]) m++;
+				else if(sa[i - 1] + l >= n) m++;
+				else if(rank[sa[i] + l] != rank[sa[i - 1] + l]) m++;
+			}
+			rank_[sa[i]] = m;
 		}
-		static int cnt[maxn];
-		for(int h = 1, bh = 0; h < len; h <<= 1, bh ^= 1) {
-			//stage h:
-			std::fill(cnt, cnt + len, 0);
-			for(int i = 0; i < len; i++) rank[pos[i]] = begin[bh][i] ? i : rank[pos[i - 1]];
-
-			for(int i = 1; i <= h; i++) {
-				rank[len - i] += cnt[rank[len - i]]++;
-				begin[bh ^ 1][rank[len - i]] = true;
-			}
-			for(int i = 0; i <= len; i++) {
-				if(i == len || begin[bh][i]) {
-					for(int j = i; j-- > 0; ) {
-						if(pos[j] >= h) {
-							for(int k = rank[pos[j] - h] + 1; k < len && begin[bh ^ 1][k] && !begin[bh][k]; k++) begin[bh ^ 1][k] = false;
-						}
-						if(begin[bh][j]) break;
-					}
-				}
-				if(i < len && pos[i] >= h) {
-					rank[pos[i] - h] += cnt[rank[pos[i] - h]]++;
-					begin[bh ^ 1][rank[pos[i] - h]] = true;
-				}
-			}
-			for(int i = 0; i < len; i++) pos[rank[i]] = i;
+		for(int i = 0; i < n; i++) rank[i] = rank_[i];
+		if(m >= n - 1) break;
+	}
+}
+void calc_height(int *str, int *sa, int *rank, int *height, int n) {
+	str[n] = -1; //字符串尾需有结束符
+	for(int i = 0; i < n; i++) rank[sa[i]] = i;
+	height[0] = 0;
+	for(int i = 0, k = 0; i < n; i++) {
+		if(k > 0) k--;
+		if(rank[i] != 0) {
+			while(str[i + k] == str[sa[rank[i] - 1] + k]) k++;
+			height[rank[i]] = k;
 		}
 	}
-	void build_lcp() {
-		lcp.init(len, [](int a, int b)->int{ return std::min(a, b); });
-		for(int i = 0, k = 0; i < len; i++)
-			if(rank[i] == 0) k = lcp[rank[i]] = 0;
-			else {
-				if(k) k--;
-				int j = pos[rank[i] - 1];
-				while(i + k < len && j + k < len && str[i + k] == str[j + k]) k++;
-				lcp[rank[i]] = k;
-			}
-		lcp.build();
-	}
-	inline int getLcp(int i, int j) {
-		if(i == j) return len - i;
-		i = rank[i], j = rank[j];
-		if(i > j) std::swap(i, j);
-		return lcp.query(i + 1, j);
-	}
-	int naive_lcp(char* str, int len, char* str_p, int len_p) {
-		int t = std::min(len, len_p);
-		for(int i = 0; i < t; i++) if(str[i] != str_p[i]) return i;
-		return t;
-	}
-	int lower_bound(char* str_p, int len_p) {
-		int L = 0, R = len;
-		int p[2] = {naive_lcp(str + pos[L], len - pos[L], str_p, len_p), 0};
-		while(L < R) {
-			int M = (L + R) / 2;
-			int p_[2] = {L == M ? len - pos[M] : lcp.query(L + 1, M), lcp.query(M + 1, R)};
-			int d = p[0] < p[1] ? 1 : 0;
-
-			int t;
-			if(p[d] == p_[d]) {
-				int Min = std::min(len_p, len - pos[M]);
-				for(t = p[d]; t < Min && str_p[t] == str[pos[M] + t];) t++;
-			}
-			else t = std::min(p[d], p_[d]);
-
-			if(str_p[t] <= str[pos[M] + t]) R = M, p[1] = t;
-			else if(L == M) L++;
-			else L = M, p[0] = t;
-		}
-		return L;
-	}
-};
+}
