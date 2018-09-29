@@ -1,6 +1,6 @@
 //链式前向星
-bool vis[maxn];
-int link[maxn];
+bool vis[MAXN];
+int link[MAXN];
 bool hungarian_dfs(int u) {
 	for(int i = head[u]; i != -1; i = e[i].next) if(!vis[e[i].v]) {
 		vis[e[i].v] = true;
