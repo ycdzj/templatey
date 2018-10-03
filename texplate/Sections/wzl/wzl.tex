@@ -1,0 +1,30 @@
+\newpage
+\section{wzl}
+	\subsection{素数和积}
+		\begin{flushleft}
+			If p is a prime and $p^2 \leq v$, we have $S(v,p) = S(v,p-1) - (S(v/p,p-1) - S(p-1,p-1))$.
+			\linebreak Similarly, $F(v,p) = F(v,p-1) / p^{S(v/p,p-1)-S(p-1,p-1)} / (F(v/p,p-1) / S(p-1,p-1))$.
+			\linebreak s表示，2-v 用 p 筛完还剩下的数的和
+			\linebreak f表示2-v用p筛完 除了m的倍数的剩下的数的积
+		\end{flushleft}
+		\lstinputlisting{Sections/wzl/sushuheji.cpp}
+	\subsection{BM线性递推}
+		\lstinputlisting{Sections/wzl/BM线性递推.cpp}
+	\subsection{FFT}
+		\lstinputlisting{Sections/wzl/fft.cpp}
+	\subsection{NTT}
+		\lstinputlisting{Sections/wzl/ntt.cpp}
+	\subsection{Gauss}
+		\lstinputlisting{Sections/wzl/gauss.cpp}
+	\subsection{mu,phi,prime筛}
+		\lstinputlisting{Sections/wzl/mu,phi,prime筛.cpp}
+	\subsection{polysum}
+		\lstinputlisting{Sections/wzl/polysum.cpp}
+	\subsection{杜教筛}
+		\begin{flushleft}
+			$g(1)S(n) = \sum_{i = 1}^{n}h(i) - \sum_{d = 2}^{n}g(d) \times S(\lfloor\frac{n}{d}\rfloor) $
+		\end{flushleft}
+		\lstinputlisting{Sections/wzl/杜教筛.cpp}
+	\subsection{类欧几里得}
+		\lstinputlisting{Sections/wzl/类欧几里得.cpp}
+
