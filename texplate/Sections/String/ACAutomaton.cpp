@@ -1,46 +1,50 @@
-struct Node {
-	Node *next[26], *fail;
-	int end;
-};
 struct ACA {
-	Node node[MAXN];
+	struct Node {
+		int next[26], fail;
+		int end;
+		void init() {
+			memset(next, 0, sizeof(next));
+			fail = end = 0;
+		}
+	} t[MAXN];
 	int cnt_node;
-	Node* new_node() {
-		memset(&node[cnt_node], 0, sizeof(node[cnt_node]));
-		return &node[cnt_node++];
+	int new_node() {
+		t[cnt_node].init();
+		return cnt_node++;
 	}
-	Node* root;
+
+	int root;
 	void init() {
-		cnt_node = 0;
+		cnt_node = 1;
 		root = new_node();
 	}
 	void insert(char *str, int len) {
-		Node* cur = root;
+		int cur = root;
 		for(int i = 0; i < len; i++) {
-			if(cur->next[str[i] - 'a'] == 0) {
-				cur->next[str[i] - 'a'] = new_node();
+			if(t[cur].next[str[i] - 'a'] == 0) {
+				t[cur].next[str[i] - 'a'] = new_node();
 			}
-			cur = cur->next[str[i] - 'a'];
+			cur = t[cur].next[str[i] - 'a'];
 		}
-		cur->end++;
+		t[cur].end++;
 	}
 	void build() {
-		std::queue<Node*> que;
-		root->fail = root;
+		std::queue<int> que;
+		t[root].fail = root;
 		for(int i = 0; i < 26; i++) {
-			if(root->next[i] == 0) root->next[i] = root;
+			if(t[root].next[i] == 0) t[root].next[i] = root;
 			else {
-				root->next[i]->fail = root;
-				que.push(root->next[i]);
+				t[t[root].next[i]].fail = root;
+				que.push(t[root].next[i]);
 			}
 		}
 		while(!que.empty()) {
-			Node *u = que.front(); que.pop();
+			int u = que.front(); que.pop();
 			for(int i = 0; i < 26; i++) {
-				if(u->next[i] == 0) u->next[i] = u->fail->next[i];
+				if(t[u].next[i] == 0) t[u].next[i] = t[t[u].fail].next[i];
 				else {
-					u->next[i]->fail = u->fail->next[i];
-					que.push(u->next[i]);
+					t[t[u].next[i]].fail = t[t[u].fail].next[i];
+					que.push(t[u].next[i]);
 				}
 			}
 		}

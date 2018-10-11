@@ -1,6 +1,6 @@
 struct Graph {
-	struct { int v, cap, next; } e[maxm];
-	int head[maxn], cnt_edge;
+	struct { int v, cap, next; } e[MAXM];
+	int head[MAXN], cnt_edge;
 	void add_edge_(int u, int v, int cap) {
 		e[cnt_edge] = { v, cap, head[u] };
 		head[u] = cnt_edge++;
@@ -14,7 +14,7 @@ struct Graph {
 		cnt_edge = 0;
 	}
 	
-	int level[maxn], cur[maxn];
+	int level[MAXN], cur[MAXN];
 	bool dinic_bfs(int s, int t) {
 		memset(level, 0xff, sizeof(level));
 		std::queue<int> q;

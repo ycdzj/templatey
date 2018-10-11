@@ -1,41 +1,44 @@
 struct Node {
-	Node *go[26], *par;
+	int go[26], par;
 	int val;
+	void init(int val_) {
+		memset(this, 0, sizeof(*this));
+		val = val_;
+	}
 };
 struct SAM {
-	Node node[MAXN * 2];
+	Node t[MAXN * 2];
 	int cnt_node;
-	Node* new_node(int val) {
-		memset(&node[cnt_node], 0, sizeof(Node));
-		node[cnt_node].val = val;
-		return &node[cnt_node++];
+	int new_node(int val) {
+		t[cnt_node].init(val);
+		return cnt_node++;
 	}
 
-	Node *root, *last;
+	int root, last;
 	void init() {
-		cnt_node = 0;
+		cnt_node = 1;
 		root = last = new_node(0);
 	}
 	void extend(int w) {
-		Node *p = last;
-		Node *np = new_node(last->val + 1);
-		while(p != 0 && p->go[w] == 0) {
-			p->go[w] = np;
-			p = p->par;
+		int p = last;
+		int np = new_node(t[last].val + 1);
+		while(p != 0 && t[p].go[w] == 0) {
+			t[p].go[w] = np;
+			p = t[p].par;
 		}
-		if(p == 0) np->par = root;
+		if(p == 0) t[np].par = root;
 		else {
-			Node *q = p->go[w];
-			if(q->val == p->val + 1) np->par = q;
+			int q = t[p].go[w];
+			if(t[q].val == t[p].val + 1) t[np].par = q;
 			else {
-				Node *nq = new_node(p->val + 1);
-				memcpy(nq->go, q->go, sizeof(q->go));
-				nq->par = q->par;
-				q->par = nq;
-				np->par = nq;
-				while(p != 0 && p->go[w] == q) {
-					p->go[w] = nq;
-					p = p->par;
+				int nq = new_node(t[p].val + 1);
+				memcpy(t[nq].go, t[q].go, sizeof(t[q].go));
+				t[nq].par = t[q].par;
+				t[q].par = nq;
+				t[np].par = nq;
+				while(p != 0 && t[p].go[w] == q) {
+					t[p].go[w] = nq;
+					p = t[p].par;
 				}
 			}
 		}
