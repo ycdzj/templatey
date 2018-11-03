@@ -1,35 +1,24 @@
-echo "compiling..."
-if !(g++ gen.cpp -o gen.out && g++ code1.cpp -o code1.out && g++ code2.cpp -o code2.out)
+if !(g++ g.cpp -o g.out && g++ --std=c++11 c1.cpp -o c1.out && g++ c2.cpp -o c2.out)
 then
-	echo "compilation failed, program exiting..."
 	exit
 fi
 
-printf "enter number of attempts:"
+echo read
 read N
 
-RAND_FILE=rand.txt
+RF=rand.txt
 i=1
 while [ $i -le $N ];
 do
-	FILENAME=attempt_${i}.txt
-	printf "attempt `echo $i`: generating..."
-	echo $i > $RAND_FILE
-	./gen.out < $RAND_FILE > $FILENAME
-	printf "code1 running..."
-	./code1.out < $FILENAME > code1_output.txt
-	printf "code2 running..."
-	./code2.out < $FILENAME > code2_output.txt
-
-	if diff code1_output.txt code2_output.txt
+	FN=a${i}.txt
+	echo $i > $RF
+	./g.out < $RF > $FN
+	./c1.out < $FN > c1.txt
+	./c2.out < $FN > c2.txt
+	if diff c1.txt c2.txt
 	then
-		printf "passed.\n"
-		rm $FILENAME
-	else
-		printf "OUTPUT NOT IDENTICAL!\n"
+		echo pass
+		rm $FN
 	fi
-
 	i=$((i+1))
 done
-
-rm code1_output.txt code2_output.txt

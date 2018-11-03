@@ -1,16 +1,15 @@
-class PersisSegmentTree {
-public:
+struct PSGT {
 	struct Node {
 		int sum;
 		int lc, rc;
 	} tree[MAXN * 20];
 	int cnt_node;
-	int copyof(int u) {
+	int copy_of(int u) {
 		tree[cnt_node] = tree[u];
 		return cnt_node++;
 	}
 	void init() {
-		cnt_node = 0;
+		cnt_node = 1;
 	}
 	int build(int l, int r) {
 		int root = cnt_node++;
@@ -33,8 +32,8 @@ public:
 		int mid = (left + right) / 2;
 		return query(tree[root].lc, left, mid, l, r) + query(tree[root].rc, mid + 1, right, l, r);
 	}
-	int modify(int root, int left, int right, int p, ll val) {
-		int res = copyof(root);
+	int modify(int root, int left, int right, int p, int val) {
+		int res = copy_of(root);
 		if(left == p && right == p) tree[res].sum += val;
 		else {
 			int mid = (left + right) / 2;

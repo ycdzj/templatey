@@ -7,7 +7,7 @@ using namespace std;
 const int M=3e6+10;
 const ll p1=469762049ll,p2=998244353ll,p3=1004535809ll,g=3;
 const ll Mod=468937312667959297ll;
-//Èı¸ö³Ë»ı´óÓÚÄ£ÊıÇÒ´óÓÚ×î´ó¾í»ıµÄÏµÊıP*(n-1)^2£¬Ô­¸ù¾ùÎª3
+//ä¸‰ä¸ªä¹˜ç§¯å¤§äºæ¨¡æ•°ä¸”å¤§äºæœ€å¤§å·ç§¯çš„ç³»æ•°P*(n-1)^2ï¼ŒåŸæ ¹å‡ä¸º3
 int n,m,p;
 ll t1[M],t2[M],t3[M],t4[M],ans[3][M];
 int R[M];
@@ -28,7 +28,7 @@ void DNT(ll *a,int n,int f,int mod){
 	for(int i=2;i<=n;i<<=1){
 		int now=i>>1;
 		int wn=fpow(g,(mod-1)/i,mod);
-		if(f==-1) wn=fpow(wn,mod-2,mod);//Äæ±ä»»Ê±£¬ÄæÔª£¬»òÕß²ÉÓÃÈçÏÂµÄ½»»»·¨
+		if(f==-1) wn=fpow(wn,mod-2,mod);//é€†å˜æ¢æ—¶ï¼Œé€†å…ƒï¼Œæˆ–è€…é‡‡ç”¨å¦‚ä¸‹çš„äº¤æ¢æ³•
 		for(int j=0;j<n;j+=i){
 			int w=1,x,y;
 			for(int k=j;k<j+now;k++,w=1ll*w*wn%mod){
@@ -42,7 +42,7 @@ void DNT(ll *a,int n,int f,int mod){
 		for(int i=0;i<=n;i++){
 			a[i]=1ll*a[i]*inv%mod;
 		}
-//	  for(int i=1;i<=n/2;i++) swap(a[i],a[n-i]);//½»»»·¨£¬ÒòÎªg^(-1)=g^(n-1)£¬ËùÒÔ¿ÉÒÔÏÈÕı±ä»»£¬·­×ª¾ÍÎªÄæ±ä»»¡£
+//	  for(int i=1;i<=n/2;i++) swap(a[i],a[n-i]);//äº¤æ¢æ³•ï¼Œå› ä¸ºg^(-1)=g^(n-1)ï¼Œæ‰€ä»¥å¯ä»¥å…ˆæ­£å˜æ¢ï¼Œç¿»è½¬å°±ä¸ºé€†å˜æ¢ã€‚
 	}
 }
 
@@ -80,7 +80,7 @@ int main(){
 	NTT(t3,t4,k,p3);
 	mcpy(2);
 	REV();
-	for(int i=0;i<=n+m;i++){//ÖĞ¹úÊ£Óà¶¨ÀíºÏ²¢+ºóÃæÍÆµ¼³öµÄ¹«Ê½
+	for(int i=0;i<=n+m;i++){//ä¸­å›½å‰©ä½™å®šç†åˆå¹¶+åé¢æ¨å¯¼å‡ºçš„å…¬å¼
 		ll x=((mul(1ll*ans[0][i]*p2%Mod,fpow(p2%p1,p1-2,p1),Mod))+
 			  (mul(1ll*ans[1][i]*p1%Mod,fpow(p1%p2,p2-2,p2),Mod)))%Mod;
 		ll y=((((ans[2][i]-x)%p3+p3)%p3)*fpow(Mod%p3,p3-2,p3))%p3;

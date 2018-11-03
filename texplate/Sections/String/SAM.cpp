@@ -22,6 +22,7 @@ struct SAM {
 	void extend(int w) {
 		int p = last;
 		int np = new_node(t[last].val + 1);
+		//t[np].idx = i;
 		while(p != 0 && t[p].go[w] == 0) {
 			t[p].go[w] = np;
 			p = t[p].par;
