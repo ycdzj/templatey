@@ -8,7 +8,7 @@ ACM比赛模板，包含比赛常用算法，使用latex排版
 sudo apt install texlive-full
 git clone https://github.com/ycdzj/templatey.git
 cd templatey
-xelatex --interection=none texplate.tex
+xelatex -interaction=nonstopmode texplate.tex
 ```
 
 ## PDF
