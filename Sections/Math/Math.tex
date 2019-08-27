@@ -1,7 +1,11 @@
 \section{Math}
 	\subsection{Prime Number}
 		\begin{flushleft}
-			素数筛，$a[i]$代表$i$的素因子分解式中最小的素数。
+			线性筛，每个合数只被其最小的素因子筛掉。
+
+			$n = \prod_{i = 1}^{k} p_{i}^{w_{i}}$
+
+			$\varphi(n)=n \times \prod_{i=1}^{k}(1 - \frac{1}{p_{i}})$
 		\end{flushleft}
 		\lstinputlisting{Sections/Math/prime.cpp}
 	\subsection{Matrix Multiplication}
